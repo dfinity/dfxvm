@@ -3,6 +3,11 @@
 *dfxvm* installs the [Internet Computer SDK][sdk] (dfx), enabling you
 to easily switch between different versions.
 
+## Documentation
+
+See the [command-line reference](docs/cli-reference/index.md) for
+documentation on using dfxvm.
+
 ## Contribution
 
 Contributions to dfxvm are welcome! For information about contributing,
