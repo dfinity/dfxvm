@@ -1,0 +1,20 @@
+name: Format
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  format:
+    name: fmt:required
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run Cargo Fmt
+        run: cargo fmt --all -- --check
+        env:
+          RUST_BACKTRACE: 1
