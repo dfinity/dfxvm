@@ -1,6 +1,7 @@
 use crate::error::cli::DetermineModeError::{NoExeName, UnrecognizedExeName};
 use crate::error::cli::{DetermineModeError, DispatchError};
 use crate::{dfx, dfxvm, dfxvm_init};
+use std::error::Error;
 use std::ffi::OsString;
 use std::path::PathBuf;
 use std::process::ExitCode;
@@ -57,4 +58,9 @@ fn get_program_name(args: &[OsString]) -> Option<String> {
 
 fn report_error(e: DispatchError) {
     err!("{:#}", e);
+    let mut source = e.source();
+    while let Some(cur) = source {
+        err!("    caused by: {:#}", cur);
+        source = cur.source();
+    }
 }
