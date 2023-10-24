@@ -1,0 +1,39 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@master
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-test-1
+
+      - name: Run Tests
+        run: cargo test
+
+  aggregate:
+    name: test:required
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - name: check result
+        if: ${{ needs.test.result != 'success' }}
+        run: exit 1
