@@ -1,12 +1,20 @@
 use crate::errors::cli::DetermineModeError::{NoExeName, UnrecognizedExeName};
 use crate::errors::cli::{DetermineModeError, DispatchError};
 use crate::{dfx, dfxvm, dfxvm_init};
+use console::style;
 use std::ffi::OsString;
 use std::path::PathBuf;
 use std::process::ExitCode;
 use Mode::{Init, Manage, Proxy};
 
-pub fn dispatch(args: &[OsString]) -> Result<ExitCode, DispatchError> {
+pub fn main(args: &[OsString]) -> ExitCode {
+    dispatch(args).unwrap_or_else(|err| {
+        report_error(err);
+        ExitCode::FAILURE
+    })
+}
+
+fn dispatch(args: &[OsString]) -> Result<ExitCode, DispatchError> {
     let exit_code = match determine_mode(args)? {
         Manage => dfxvm::main(args)?,
         Init => dfxvm_init::main(args)?,
@@ -46,4 +54,8 @@ fn get_program_name(args: &[OsString]) -> Option<String> {
         .and_then(|p| p.file_stem())
         .and_then(std::ffi::OsStr::to_str)
         .map(String::from)
+}
+
+fn report_error(err: DispatchError) {
+    eprintln!("{} {:#}", style("error:").red().bold(), err);
 }

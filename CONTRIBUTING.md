@@ -17,12 +17,5 @@ this in-code documentation must be mirrored by a corresponding change
 in `docs/cli-reference`. Finally, any feature or notable bugfix should be
 mentioned in [CHANGELOG.md](CHANGELOG.md), under the `## Unreleased` header.
 
-## Guidelines
-
-### anyhow
-
-The only permitted use of anyhow::Result is in the return type of `fn main`.
-Everywhere else must use `core::result::Result`.
-
 [code-of-conduct]: https://github.com/dfinity/ic-docutrack/blob/main/.github/CODE_OF_CONDUCT.md
 [cla]: https://github.com/dfinity/cla/blob/master/CLA.md

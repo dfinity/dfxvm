@@ -1,6 +1,5 @@
 use assert_cmd::prelude::*;
 use common::TempHomeDir;
-use predicates::prelude::*;
 use predicates::str::contains;
 
 mod common;
@@ -44,32 +43,13 @@ fn dispatch_to_dfxvm_init_by_prefix() {
 }
 
 #[test]
-fn dispatch_to_unknown_default_no_backtrace() {
+fn dispatch_to_unknown() {
     let home_dir = TempHomeDir::new();
     let mut cmd = home_dir.command("called-something-else");
-
-    // Some IDEs set this
-    cmd.env_remove("RUST_BACKTRACE");
 
     cmd.assert()
         .failure()
         .stderr(contains(
-            "Error: Unrecognized executable name 'called-something-else'. Expect one of: dfx, dfxvm, dfxvm-init",
-        ))
-        .stderr(contains("Stack backtrace").not());
-}
-
-#[test]
-fn dispatch_to_unknown_with_backtrace() {
-    let home_dir = TempHomeDir::new();
-    let mut cmd = home_dir.command("called-something-else");
-
-    cmd.env("RUST_BACKTRACE", "1");
-
-    cmd.assert()
-        .failure()
-        .stderr(contains(
-            "Error: Unrecognized executable name 'called-something-else'. Expect one of: dfx, dfxvm, dfxvm-init",
-        ))
-        .stderr(contains("Stack backtrace:"));
+            "error: Unrecognized executable name 'called-something-else'. Expect one of: dfx, dfxvm, dfxvm-init",
+        ));
 }

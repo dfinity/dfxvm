@@ -8,8 +8,7 @@ mod dfxvm;
 mod dfxvm_init;
 mod errors;
 
-fn main() -> anyhow::Result<ExitCode> {
+fn main() -> ExitCode {
     let args = args_os().collect::<Vec<OsString>>();
-    let exit_code = cli::dispatch(&args)?;
-    Ok(exit_code)
+    cli::main(&args)
 }
