@@ -2,6 +2,9 @@ use std::env::args_os;
 use std::ffi::OsString;
 use std::process::ExitCode;
 
+#[macro_use]
+mod log;
+
 mod cli;
 mod dfx;
 mod dfxvm;
