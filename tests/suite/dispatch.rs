@@ -1,8 +1,6 @@
+use crate::common::TempHomeDir;
 use assert_cmd::prelude::*;
-use common::TempHomeDir;
 use predicates::str::contains;
-
-mod common;
 
 #[test]
 fn dispatch_to_dfx() {
