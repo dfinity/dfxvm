@@ -1,5 +1,5 @@
-use crate::errors::dfxvm;
-use crate::errors::{dfx, dfxvm_init};
+use crate::error::dfxvm;
+use crate::error::{dfx, dfxvm_init};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -19,9 +19,9 @@ pub enum DispatchError {
 
 #[derive(Error, Debug)]
 pub enum DetermineModeError {
-    #[error("Couldn't determine self executable name")]
+    #[error("couldn't determine self executable name")]
     NoExeName,
 
-    #[error("Unrecognized executable name '{0}'. Expect one of: dfx, dfxvm, dfxvm-init")]
+    #[error("unrecognized executable name '{0}'; expect one of: dfx, dfxvm, dfxvm-init")]
     UnrecognizedExeName(String),
 }

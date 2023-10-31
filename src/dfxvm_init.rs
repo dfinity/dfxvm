@@ -1,4 +1,4 @@
-use crate::errors::dfxvm_init;
+use crate::error::dfxvm_init;
 use std::ffi::OsString;
 use std::process::ExitCode;
 

@@ -1,4 +1,4 @@
-use crate::errors::dfx;
+use crate::error::dfx;
 use std::ffi::OsString;
 use std::process::ExitCode;
 

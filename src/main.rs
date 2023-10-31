@@ -9,7 +9,7 @@ mod cli;
 mod dfx;
 mod dfxvm;
 mod dfxvm_init;
-mod errors;
+mod error;
 
 fn main() -> ExitCode {
     let args = args_os().collect::<Vec<OsString>>();

@@ -1,4 +1,4 @@
-use crate::errors::dfxvm::ListError;
+use crate::error::dfxvm::ListError;
 use std::process::ExitCode;
 
 pub fn list() -> Result<ExitCode, ListError> {
