@@ -1,8 +1,6 @@
+use crate::common::TempHomeDir;
 use assert_cmd::prelude::*;
-use common::TempHomeDir;
 use predicates::str::contains;
-
-mod common;
 
 #[test]
 fn dispatch_to_dfx() {
@@ -16,10 +14,11 @@ fn dispatch_to_dfx() {
 fn dispatch_to_dfxvm() {
     let home_dir = TempHomeDir::new();
     let mut cmd = home_dir.dfxvm();
+    cmd.arg("--help");
 
     cmd.assert()
         .success()
-        .stdout("Hello, world! (dfxvm mode)\n");
+        .stdout(contains("Usage: dfxvm <COMMAND>"));
 }
 
 #[test]
