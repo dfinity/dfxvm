@@ -1,4 +1,3 @@
-use crate::err;
 use crate::errors::cli::DetermineModeError::{NoExeName, UnrecognizedExeName};
 use crate::errors::cli::{DetermineModeError, DispatchError};
 use crate::{dfx, dfxvm, dfxvm_init};

@@ -2,9 +2,8 @@ use console::style;
 use std::fmt;
 use std::io::Write;
 
-#[macro_export]
 macro_rules! err {
-    ( $ ( $ arg : tt ) * ) => ( $crate::log::err_fmt ( format_args ! ( $ ( $ arg ) * ) ) )
+    ($($arg:tt)*) => ( $crate::log::err_fmt(format_args!($($arg)*)) )
 }
 
 pub fn err_fmt(args: fmt::Arguments<'_>) {
