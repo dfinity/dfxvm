@@ -354,7 +354,7 @@ fn malformed_version_in_dfx_json() {
 
     cmd.assert()
         .failure()
-        .stderr(is_match("failed to parse dfx version '3.x' from .*/dfx.json").unwrap())
+        .stderr(is_match("failed to parse .*/dfx.json as json").unwrap())
         .stderr(is_match("caused by: .*minor version number").unwrap());
 }
 
@@ -380,12 +380,7 @@ fn malformed_version_in_settings() {
 
     cmd.assert()
         .failure()
-        .stderr(
-            is_match(
-                "failed to parse default version 'X.2' from .*/.config/dfx/version-manager.json",
-            )
-            .unwrap(),
-        )
+        .stderr(is_match("failed to parse .*/.config/dfx/version-manager.json as json").unwrap())
         .stderr(is_match("caused by: .*major version number").unwrap());
 }
 
@@ -398,7 +393,7 @@ fn ignores_empty_version_from_environment() {
         "echo 'this is the zero point two point one dfx executable'",
     );
 
-    for s in ["", "\n", "\t",  "   \n\n\t  "] {
+    for s in ["", "\n", "\t", "   \n\n\t  "] {
         let mut cmd = home_dir.dfx();
         cmd.env("DFX_VERSION", s);
         cmd.assert()

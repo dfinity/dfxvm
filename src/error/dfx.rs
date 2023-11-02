@@ -1,8 +1,6 @@
 use crate::error::env::{GetCurrentDirError, NoHomeDirectoryError};
 use crate::error::fs::CanonicalizePathError;
 use crate::error::json::LoadJsonFileError;
-use crate::error::settings::LoadSettingsError;
-use std::path::PathBuf;
 use std::process::Command;
 use thiserror::Error;
 
@@ -30,7 +28,7 @@ pub enum DetermineDfxVersionError {
     GetVersionFromDfxJson(#[from] GetVersionFromDfxJsonError),
 
     #[error(transparent)]
-    LoadSettings(#[from] LoadSettingsError),
+    LoadSettings(#[from] LoadJsonFileError),
 
     #[error(transparent)]
     GetVersionFromCommandLine(#[from] GetVersionFromCommandLineError),
@@ -62,13 +60,6 @@ pub enum GetVersionFromDfxJsonError {
 
     #[error(transparent)]
     LoadDfxJson(#[from] LoadJsonFileError),
-
-    #[error("failed to parse dfx version '{version}' from {path}")]
-    ParseVersion {
-        version: String,
-        path: PathBuf,
-        source: semver::Error,
-    },
 }
 
 #[derive(Error, Debug)]

@@ -5,4 +5,3 @@ pub mod dfxvm_init;
 pub mod env;
 pub mod fs;
 pub mod json;
-pub mod settings;

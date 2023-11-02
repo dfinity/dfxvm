@@ -4,7 +4,7 @@ use crate::error::dfx::{
     DetermineDfxVersionError, FindDfxJsonError, GetVersionFromCommandLineError,
     GetVersionFromDfxJsonError, GetVersionFromEnvironmentError,
 };
-use crate::error::settings::LoadSettingsError;
+use crate::error::json::LoadJsonFileError;
 use crate::json::load_json_file;
 use crate::locations::Locations;
 use crate::settings::Settings;
@@ -96,7 +96,7 @@ fn get_version_from_environment() -> Result<Option<Version>, GetVersionFromEnvir
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct DfxJson {
-    pub dfx: Option<String>,
+    pub dfx: Option<Version>,
 }
 
 fn get_version_from_dfx_json() -> Result<Option<Version>, GetVersionFromDfxJsonError> {
@@ -106,16 +106,7 @@ fn get_version_from_dfx_json() -> Result<Option<Version>, GetVersionFromDfxJsonE
     };
     let dfx_json: DfxJson = load_json_file(&dfx_json_path)?;
 
-    let Some(version) = dfx_json.dfx else {
-        return Ok(None);
-    };
-    let version =
-        Version::parse(&version).map_err(|source| GetVersionFromDfxJsonError::ParseVersion {
-            version,
-            path: dfx_json_path,
-            source,
-        })?;
-    Ok(Some(version))
+    Ok(dfx_json.dfx)
 }
 
 fn find_dfx_json() -> Result<Option<PathBuf>, FindDfxJsonError> {
@@ -128,7 +119,7 @@ fn find_dfx_json() -> Result<Option<PathBuf>, FindDfxJsonError> {
     Ok(None)
 }
 
-fn get_version_from_settings(locations: &Locations) -> Result<Option<Version>, LoadSettingsError> {
+fn get_version_from_settings(locations: &Locations) -> Result<Option<Version>, LoadJsonFileError> {
     let path = locations.settings_path();
     if path.exists() {
         let settings = Settings::load(&path)?;
