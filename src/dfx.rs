@@ -14,7 +14,7 @@ use serde::Deserialize;
 use std::ffi::OsString;
 use std::os::unix::ffi::OsStrExt;
 use std::os::unix::process::CommandExt;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::process::ExitCode;
 
 pub fn main(args: &[OsString]) -> Result<ExitCode, dfx::Error> {
@@ -118,13 +118,11 @@ fn get_version_from_dfx_json() -> Result<Option<Version>, GetVersionFromDfxJsonE
 }
 
 fn find_dfx_json() -> Result<Option<PathBuf>, FindDfxJsonError> {
-    let mut maybe_parent = Some(crate::fs::canonicalize(&crate::env::current_dir()?)?);
-    while let Some(parent) = maybe_parent {
+    for parent in crate::fs::canonicalize(&crate::env::current_dir()?)?.ancestors() {
         let path = parent.join("dfx.json");
         if path.exists() {
             return Ok(Some(path));
         }
-        maybe_parent = parent.parent().map(Path::to_path_buf);
     }
     Ok(None)
 }
