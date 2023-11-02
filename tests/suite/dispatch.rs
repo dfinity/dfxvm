@@ -49,6 +49,6 @@ fn dispatch_to_unknown() {
     cmd.assert()
         .failure()
         .stderr(contains(
-            "error: Unrecognized executable name 'called-something-else'. Expect one of: dfx, dfxvm, dfxvm-init",
+            "error: unrecognized executable name 'called-something-else'; expect one of: dfx, dfxvm, dfxvm-init",
         ));
 }

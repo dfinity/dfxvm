@@ -1,5 +1,5 @@
-use crate::errors::cli::DetermineModeError::{NoExeName, UnrecognizedExeName};
-use crate::errors::cli::{DetermineModeError, DispatchError};
+use crate::error::cli::DetermineModeError::{NoExeName, UnrecognizedExeName};
+use crate::error::cli::{DetermineModeError, DispatchError};
 use crate::{dfx, dfxvm, dfxvm_init};
 use std::ffi::OsString;
 use std::path::PathBuf;

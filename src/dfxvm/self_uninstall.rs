@@ -1,4 +1,4 @@
-use crate::errors::dfxvm::SelfUninstallError;
+use crate::error::dfxvm::SelfUninstallError;
 use std::process::ExitCode;
 
 pub fn self_uninstall() -> Result<ExitCode, SelfUninstallError> {

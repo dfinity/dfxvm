@@ -1,4 +1,4 @@
-use crate::errors::dfxvm::UninstallError;
+use crate::error::dfxvm::UninstallError;
 use semver::Version;
 use std::process::ExitCode;
 

@@ -1,4 +1,4 @@
-use crate::errors::dfxvm::UpdateError;
+use crate::error::dfxvm::UpdateError;
 use std::process::ExitCode;
 
 pub fn update() -> Result<ExitCode, UpdateError> {

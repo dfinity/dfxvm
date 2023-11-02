@@ -1,4 +1,4 @@
-use crate::errors::dfxvm::SelfUpdateError;
+use crate::error::dfxvm::SelfUpdateError;
 use std::process::ExitCode;
 
 pub fn self_update() -> Result<ExitCode, SelfUpdateError> {

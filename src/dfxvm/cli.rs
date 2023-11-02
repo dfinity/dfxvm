@@ -2,7 +2,7 @@ use crate::dfxvm::{
     default::default, install::install, list::list, self_uninstall::self_uninstall,
     self_update::self_update, uninstall::uninstall, update::update,
 };
-use crate::errors::dfxvm;
+use crate::error::dfxvm;
 use clap::{Parser, Subcommand};
 use semver::Version;
 use std::ffi::OsString;
