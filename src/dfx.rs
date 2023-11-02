@@ -86,6 +86,7 @@ fn get_version_from_commandline(
 fn get_version_from_environment() -> Result<Option<Version>, GetVersionFromEnvironmentError> {
     std::env::var("DFX_VERSION")
         .ok()
+        .filter(|s| !s.trim().is_empty())
         .map(|version| {
             Version::parse(&version)
                 .map_err(|source| GetVersionFromEnvironmentError { version, source })

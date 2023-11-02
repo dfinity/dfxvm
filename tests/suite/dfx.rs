@@ -388,3 +388,21 @@ fn malformed_version_in_settings() {
         )
         .stderr(is_match("caused by: .*major version number").unwrap());
 }
+
+#[test]
+fn ignores_empty_version_from_environment() {
+    let home_dir = TempHomeDir::new();
+    home_dir.settings().write_default_version("0.2.1");
+    home_dir.create_executable_dfx_script(
+        "0.2.1",
+        "echo 'this is the zero point two point one dfx executable'",
+    );
+
+    for s in ["", "\n", "\t",  "   \n\n\t  "] {
+        let mut cmd = home_dir.dfx();
+        cmd.env("DFX_VERSION", s);
+        cmd.assert()
+            .success()
+            .stdout("this is the zero point two point one dfx executable\n");
+    }
+}
