@@ -22,16 +22,16 @@ pub enum Error {
 #[derive(Error, Debug)]
 pub enum DetermineDfxVersionError {
     #[error(transparent)]
-    GetVersionFromEnvironment(#[from] GetVersionFromEnvironmentError),
+    GetVersionFromCommandLine(#[from] GetVersionFromCommandLineError),
 
     #[error(transparent)]
     GetVersionFromDfxJson(#[from] GetVersionFromDfxJsonError),
 
     #[error(transparent)]
-    LoadSettings(#[from] LoadJsonFileError),
+    GetVersionFromEnvironment(#[from] GetVersionFromEnvironmentError),
 
     #[error(transparent)]
-    GetVersionFromCommandLine(#[from] GetVersionFromCommandLineError),
+    LoadSettings(#[from] LoadJsonFileError),
 }
 
 #[derive(Error, Debug)]
@@ -65,8 +65,8 @@ pub enum GetVersionFromDfxJsonError {
 #[derive(Error, Debug)]
 pub enum FindDfxJsonError {
     #[error(transparent)]
-    GetCurrentDir(#[from] GetCurrentDirError),
+    CanonicalizePath(#[from] CanonicalizePathError),
 
     #[error(transparent)]
-    CanonicalizePath(#[from] CanonicalizePathError),
+    GetCurrentDir(#[from] GetCurrentDirError),
 }
