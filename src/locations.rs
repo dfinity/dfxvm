@@ -26,6 +26,7 @@ impl Locations {
         let project_dirs =
             ProjectDirs::from("org", "dfinity", "dfx").ok_or(NoHomeDirectoryError)?;
         let versions_dir = project_dirs.data_local_dir().join("versions");
+        #[cfg(unix)]
         let config_dir = home_dir()?.join(".config").join("dfx");
         Ok(Self {
             versions_dir,

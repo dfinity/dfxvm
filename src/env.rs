@@ -6,6 +6,7 @@ pub fn current_dir() -> Result<PathBuf, GetCurrentDirError> {
 }
 
 pub fn home_dir() -> Result<PathBuf, NoHomeDirectoryError> {
+    #[cfg(unix)]
     let home = std::env::var_os("HOME").ok_or(NoHomeDirectoryError)?;
     Ok(PathBuf::from(home))
 }
