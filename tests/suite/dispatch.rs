@@ -7,7 +7,12 @@ fn dispatch_to_dfx() {
     let home_dir = TempHomeDir::new();
     let mut cmd = home_dir.dfx();
 
-    cmd.assert().success().stdout("Hello, world! (dfx mode)\n");
+    home_dir.create_executable_dfx_script("4.6.0", "echo 'Hello, world! (dfx 0.4.6 script)'");
+
+    cmd.arg("+4.6.0");
+    cmd.assert()
+        .success()
+        .stdout("Hello, world! (dfx 0.4.6 script)\n");
 }
 
 #[test]

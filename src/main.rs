@@ -9,7 +9,13 @@ mod cli;
 mod dfx;
 mod dfxvm;
 mod dfxvm_init;
+mod env;
 mod error;
+mod fs;
+mod json;
+mod locations;
+mod settings;
+mod style;
 
 fn main() -> ExitCode {
     let args = args_os().collect::<Vec<OsString>>();
