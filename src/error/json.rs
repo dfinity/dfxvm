@@ -1,4 +1,4 @@
-use crate::error::fs::ReadFileError;
+use crate::error::fs::{ReadFileError, WriteFileError};
 use std::path::PathBuf;
 use thiserror::Error;
 
@@ -12,4 +12,16 @@ pub enum LoadJsonFileError {
 
     #[error(transparent)]
     Read(#[from] ReadFileError),
+}
+
+#[derive(Error, Debug)]
+pub enum SaveJsonFileError {
+    #[error("failed to serialize json for {path}")]
+    Serialize {
+        path: PathBuf,
+        source: serde_json::Error,
+    },
+
+    #[error(transparent)]
+    Write(#[from] WriteFileError),
 }

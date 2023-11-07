@@ -1,6 +1,6 @@
 use crate::error::fs::{
     CanonicalizePathError, CreateDirAllError, CreateFileError, OpenFileError, ReadFileError,
-    ReadToStringError, RenameError,
+    ReadToStringError, RenameError, WriteFileError,
 };
 use std::path::{Path, PathBuf};
 
@@ -50,6 +50,13 @@ pub fn rename(from: &Path, to: &Path) -> Result<(), RenameError> {
 pub fn create_dir_all(path: &Path) -> Result<(), CreateDirAllError> {
     std::fs::create_dir_all(path).map_err(|source| CreateDirAllError {
         path: path.to_path_buf(),
+        source,
+    })
+}
+
+pub fn write<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) -> Result<(), WriteFileError> {
+    std::fs::write(path.as_ref(), contents).map_err(|source| WriteFileError {
+        path: path.as_ref().to_path_buf(),
         source,
     })
 }

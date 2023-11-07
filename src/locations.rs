@@ -24,6 +24,10 @@ impl Locations {
         self.version_dir(version).join("dfx")
     }
 
+    pub fn config_dir(&self) -> &Path {
+        &self.config_dir
+    }
+
     pub fn settings_path(&self) -> PathBuf {
         self.config_dir.join(SETTINGS_FILENAME)
     }
