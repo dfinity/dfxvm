@@ -124,7 +124,7 @@ fn get_version_from_settings(locations: &Locations) -> Result<Option<Version>, L
     if path.exists() {
         let settings = Settings::load(&path)?;
 
-        Ok(Some(settings.default_version))
+        Ok(settings.default_version)
     } else {
         Ok(None)
     }
