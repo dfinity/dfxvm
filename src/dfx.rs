@@ -121,11 +121,5 @@ fn find_dfx_json() -> Result<Option<PathBuf>, FindDfxJsonError> {
 
 fn get_version_from_settings(locations: &Locations) -> Result<Option<Version>, LoadJsonFileError> {
     let path = locations.settings_path();
-    if path.exists() {
-        let settings = Settings::load(&path)?;
-
-        Ok(settings.default_version)
-    } else {
-        Ok(None)
-    }
+    Settings::load_or_default(&path).map(|settings| settings.default_version)
 }
