@@ -80,7 +80,7 @@ pub struct SelfUninstallOpts {}
 
 pub async fn main(args: &[OsString]) -> Result<ExitCode, dfxvm::Error> {
     let cli = Cli::parse_from(args);
-    let exit_code = match cli.command {
+    match cli.command {
         Command::Default(opts) => default(opts.version)?,
         Command::Install(opts) => install(opts.version).await?,
         Command::List(_opts) => list()?,
@@ -91,5 +91,5 @@ pub async fn main(args: &[OsString]) -> Result<ExitCode, dfxvm::Error> {
         Command::Uninstall(opts) => uninstall(opts.version)?,
         Command::Update(_opts) => update()?,
     };
-    Ok(exit_code)
+    Ok(ExitCode::SUCCESS)
 }

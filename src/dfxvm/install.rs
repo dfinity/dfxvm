@@ -30,17 +30,16 @@ use sha2::{Digest, Sha256};
 use std::cmp::min;
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::process::ExitCode;
 use tar::Archive;
 use tempdir::TempDir;
 
-pub async fn install(version: Version) -> Result<ExitCode, InstallError> {
+pub async fn install(version: Version) -> Result<(), InstallError> {
     let locations = Locations::new()?;
     let settings = Settings::load_or_default(&locations.settings_path())?;
     let version_dir = locations.version_dir(&version);
     if version_dir.exists() {
         info!("dfx {version} is already installed");
-        return Ok(ExitCode::SUCCESS);
+        return Ok(());
     }
     create_dir_all(locations.versions_dir())?;
 
@@ -64,7 +63,7 @@ pub async fn install(version: Version) -> Result<ExitCode, InstallError> {
 
     info!("installed dfx {version}");
 
-    Ok(ExitCode::SUCCESS)
+    Ok(())
 }
 
 async fn download_verified_tarball(
