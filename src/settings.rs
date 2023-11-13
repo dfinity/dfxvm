@@ -6,7 +6,7 @@ use std::path::Path;
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Settings {
-    pub default_version: Version,
+    pub default_version: Option<Version>,
 }
 
 impl Settings {

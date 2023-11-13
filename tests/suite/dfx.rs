@@ -19,6 +19,22 @@ fn no_version_anywhere() {
 }
 
 #[test]
+fn no_version_but_empty_settings() {
+    let home_dir = TempHomeDir::new();
+    home_dir.settings().write("{}");
+
+    let mut cmd = home_dir.dfx();
+
+    cmd.assert()
+        .failure()
+        .stdout("")
+        .stderr(contains(
+            "error: Unable to determine which dfx version to call. To set a default version, run",
+        ))
+        .stderr(contains("dfxvm default <version>"));
+}
+
+#[test]
 fn version_from_commandline() {
     let home_dir = TempHomeDir::new();
     let mut cmd = home_dir.dfx();
