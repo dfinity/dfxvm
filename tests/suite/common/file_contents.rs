@@ -41,8 +41,7 @@ pub fn sha256(filename: &str, contents: &[u8]) -> String {
 
 pub fn bash_script(snippet: &str) -> String {
     format!(
-        r#"
-#!/usr/bin/env bash
+        r#"#!/usr/bin/env bash
 
 set -e
 
