@@ -7,7 +7,6 @@ use std::process::Command;
 fn successful_install() {
     let home_dir = TempHomeDir::new();
     let server = ReleaseServer::new(&home_dir);
-    home_dir.settings().write_default_version("0.0.0");
 
     let tarball = ReleaseAsset::dfx_tarball("0.15.0", "echo 'this is dfx 0.15.0'");
     let sha256 = ReleaseAsset::sha256(&tarball);
@@ -28,7 +27,7 @@ fn successful_install() {
 fn incorrect_sha256() {
     let home_dir = TempHomeDir::new();
     let server = ReleaseServer::new(&home_dir);
-    home_dir.settings().write_default_version("0.0.0");
+
     let tarball = ReleaseAsset::dfx_tarball("0.15.0", "echo 'this is dfx 0.15.0'");
     let wrong = ReleaseAsset::dfx_tarball("0.15.0", "echo 'not it'");
     let shasum = ReleaseAsset::sha256(&wrong);
@@ -51,7 +50,6 @@ fn version_does_not_exist() {
 
     let home_dir = TempHomeDir::new();
     let server = ReleaseServer::new(&home_dir);
-    home_dir.settings().write_default_version("0.0.0");
 
     let tarball = ReleaseAsset::dfx_tarball(version, "echo 'this is dfx 0.13.6'");
     let sha256 = ReleaseAsset::sha256(&tarball);
