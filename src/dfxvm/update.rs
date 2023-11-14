@@ -1,7 +1,6 @@
 use crate::error::dfxvm::UpdateError;
-use std::process::ExitCode;
 
-pub fn update() -> Result<ExitCode, UpdateError> {
+pub fn update() -> Result<(), UpdateError> {
     println!("update to latest dfx");
-    Ok(ExitCode::SUCCESS)
+    Ok(())
 }

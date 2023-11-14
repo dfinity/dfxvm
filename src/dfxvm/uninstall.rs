@@ -1,8 +1,7 @@
 use crate::error::dfxvm::UninstallError;
 use semver::Version;
-use std::process::ExitCode;
 
-pub fn uninstall(version: Version) -> Result<ExitCode, UninstallError> {
+pub fn uninstall(version: Version) -> Result<(), UninstallError> {
     println!("uninstall dfx {}", version);
-    Ok(ExitCode::SUCCESS)
+    Ok(())
 }
