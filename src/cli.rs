@@ -1,23 +1,23 @@
 use crate::error::cli::DetermineModeError::{NoExeName, UnrecognizedExeName};
 use crate::error::cli::{DetermineModeError, DispatchError};
+use crate::log::log_error;
 use crate::{dfx, dfxvm, dfxvm_init};
-use std::error::Error;
 use std::ffi::OsString;
 use std::path::PathBuf;
 use std::process::ExitCode;
 use Mode::{Init, Manage, Proxy};
 
-pub fn main(args: &[OsString]) -> ExitCode {
-    dispatch(args).unwrap_or_else(|err| {
-        report_error(err);
+pub async fn main(args: &[OsString]) -> ExitCode {
+    dispatch(args).await.unwrap_or_else(|err| {
+        log_error(&err);
         ExitCode::FAILURE
     })
 }
 
-fn dispatch(args: &[OsString]) -> Result<ExitCode, DispatchError> {
+pub async fn dispatch(args: &[OsString]) -> Result<ExitCode, DispatchError> {
     let exit_code = match determine_mode(args)? {
-        Manage => dfxvm::main(args)?,
         Init => dfxvm_init::main(args)?,
+        Manage => dfxvm::main(args).await?,
         Proxy => dfx::main(args)?,
     };
     Ok(exit_code)
@@ -54,13 +54,4 @@ fn get_program_name(args: &[OsString]) -> Option<String> {
         .and_then(|p| p.file_stem())
         .and_then(std::ffi::OsStr::to_str)
         .map(String::from)
-}
-
-fn report_error(e: DispatchError) {
-    err!("{:#}", e);
-    let mut source = e.source();
-    while let Some(cur) = source {
-        err!("    caused by: {:#}", cur);
-        source = cur.source();
-    }
 }

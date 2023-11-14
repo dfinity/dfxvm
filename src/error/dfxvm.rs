@@ -1,4 +1,7 @@
+use crate::error::dfxvm::install::InstallError;
 use thiserror::Error;
+
+pub mod install;
 
 #[derive(Error, Debug)]
 pub enum Error {
@@ -26,9 +29,6 @@ pub enum Error {
 
 #[derive(Error, Debug)]
 pub enum DefaultError {}
-
-#[derive(Error, Debug)]
-pub enum InstallError {}
 
 #[derive(Error, Debug)]
 pub enum ListError {}

@@ -78,11 +78,11 @@ pub struct SelfUpdateOpts {}
 #[derive(Parser)]
 pub struct SelfUninstallOpts {}
 
-pub fn main(args: &[OsString]) -> Result<ExitCode, dfxvm::Error> {
+pub async fn main(args: &[OsString]) -> Result<ExitCode, dfxvm::Error> {
     let cli = Cli::parse_from(args);
     let exit_code = match cli.command {
         Command::Default(opts) => default(opts.version)?,
-        Command::Install(opts) => install(opts.version)?,
+        Command::Install(opts) => install(opts.version).await?,
         Command::List(_opts) => list()?,
         Command::SelfCommand(opts) => match opts.command {
             SelfCommand::Update(_opts) => self_update()?,

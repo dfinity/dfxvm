@@ -2,7 +2,7 @@ use crate::env::home_dir;
 use crate::error::env::NoHomeDirectoryError;
 use directories::ProjectDirs;
 use semver::Version;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 const SETTINGS_FILENAME: &str = "version-manager.json";
 
@@ -12,8 +12,16 @@ pub struct Locations {
 }
 
 impl Locations {
+    pub fn versions_dir(&self) -> &Path {
+        &self.versions_dir
+    }
+
+    pub fn version_dir(&self, version: &Version) -> PathBuf {
+        self.versions_dir().join(version.to_string())
+    }
+
     pub fn dfx_bin_path(&self, version: &Version) -> PathBuf {
-        self.versions_dir.join(version.to_string()).join("dfx")
+        self.version_dir(version).join("dfx")
     }
 
     pub fn settings_path(&self) -> PathBuf {

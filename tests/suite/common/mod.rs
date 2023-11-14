@@ -1,6 +1,12 @@
+pub mod file_contents;
+mod release_asset;
+mod release_server;
 mod settings;
+mod target;
 mod temp_home_dir;
 
+pub use release_asset::ReleaseAsset;
+pub use release_server::ReleaseServer;
 pub use settings::Settings;
 pub use temp_home_dir::TempHomeDir;
 

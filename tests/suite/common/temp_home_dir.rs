@@ -1,4 +1,4 @@
-use crate::common::{dfxvm_path, Settings};
+use crate::common::{dfxvm_path, file_contents, Settings};
 use directories::ProjectDirs;
 use std::env;
 use std::fs::create_dir_all;
@@ -66,11 +66,19 @@ impl TempHomeDir {
         command
     }
 
+    pub fn dfx_version_dir(&self, version: &str) -> PathBuf {
+        self.versions_dir.join(version)
+    }
+
+    pub fn installed_dfx_path(&self, version: &str) -> PathBuf {
+        self.dfx_version_dir(version).join("dfx")
+    }
+
     pub fn create_executable_dfx_script(&self, version: &str, snippet: &str) -> PathBuf {
         let version = self.versions_dir.join(version);
         create_dir_all(&version).unwrap();
         let bin_path = version.join("dfx");
-        let script = format_bash_script(snippet);
+        let script = file_contents::bash_script(snippet);
         std::fs::write(&bin_path, script).unwrap();
         set_executable(&bin_path);
         bin_path
@@ -79,18 +87,6 @@ impl TempHomeDir {
     pub fn settings(&self) -> Settings {
         Settings::new(self.config_dir.join("version-manager.json"))
     }
-}
-
-fn format_bash_script(snippet: &str) -> String {
-    format!(
-        r#"
-#!/usr/bin/env bash
-
-set -e
-
-{snippet}
-"#
-    )
 }
 
 fn set_executable(bin_path: &Path) {
