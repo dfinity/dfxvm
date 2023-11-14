@@ -38,7 +38,7 @@ pub struct InstallOpts {
 #[derive(Parser)]
 pub struct DefaultOpts {
     /// dfx version to use by default
-    version: Version,
+    version: Option<Version>,
 }
 
 /// List installed versions of dfx
@@ -81,7 +81,7 @@ pub struct SelfUninstallOpts {}
 pub async fn main(args: &[OsString]) -> Result<ExitCode, dfxvm::Error> {
     let cli = Cli::parse_from(args);
     match cli.command {
-        Command::Default(opts) => default(opts.version)?,
+        Command::Default(opts) => default(opts.version).await?,
         Command::Install(opts) => install(opts.version).await?,
         Command::List(_opts) => list()?,
         Command::SelfCommand(opts) => match opts.command {

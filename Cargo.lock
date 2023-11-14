@@ -337,6 +337,7 @@ dependencies = [
  "hex",
  "httptest",
  "indicatif",
+ "itertools",
  "predicates",
  "reqwest",
  "semver",

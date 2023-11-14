@@ -9,3 +9,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `dfx` mode, which selects a dfx version and dispatches execution to it.
 - Added `dfxvm install` command, which installs a dfx version.
+- Added `dfxvm default` command, which sets or displays the default dfx version.

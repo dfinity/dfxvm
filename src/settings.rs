@@ -1,16 +1,22 @@
-use crate::error::json::LoadJsonFileError;
-use crate::json::load_json_file;
+use crate::error::json::{LoadJsonFileError, SaveJsonFileError};
+use crate::json::{load_json_file, save_json_file};
 use semver::Version;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use std::path::Path;
 
 const DEFAULT_DOWNLOAD_URL_TEMPLATE: &str = "https://github.com/dfinity/sdk/releases/download/{{version}}/dfx-{{version}}-{{arch}}-{{platform}}.tar.gz";
 
-#[derive(Clone, Debug, Default, Deserialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Settings {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub default_version: Option<Version>,
 
-    download_url_template: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub download_url_template: Option<String>,
+
+    #[serde(flatten)]
+    pub extra: Value,
 }
 
 impl Settings {
@@ -26,5 +32,9 @@ impl Settings {
         } else {
             Ok(Self::default())
         }
+    }
+
+    pub fn save(&self, path: &Path) -> Result<(), SaveJsonFileError> {
+        save_json_file(path, &self)
     }
 }
