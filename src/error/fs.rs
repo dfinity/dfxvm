@@ -44,6 +44,20 @@ pub struct ReadToStringError {
 }
 
 #[derive(Error, Debug)]
+#[error("failed to remove directory {path} and contents")]
+pub struct RemoveDirAllError {
+    pub path: PathBuf,
+    pub source: std::io::Error,
+}
+
+#[derive(Error, Debug)]
+#[error("failed to remove {path}")]
+pub struct RemoveFileError {
+    pub path: PathBuf,
+    pub source: std::io::Error,
+}
+
+#[derive(Error, Debug)]
 #[error("failed to rename {from} to {to}")]
 pub struct RenameError {
     pub from: PathBuf,

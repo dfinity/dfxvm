@@ -1,5 +1,8 @@
-use crate::error::dfxvm::update::UpdateError;
-use crate::error::{dfxvm::default::DefaultError, dfxvm::install::InstallError};
+use crate::error::{
+    dfxvm::{default::DefaultError, install::InstallError, update::UpdateError},
+    env::NoHomeDirectoryError,
+    fs::{RemoveDirAllError, RemoveFileError, RenameError},
+};
 use thiserror::Error;
 
 pub mod default;
@@ -34,7 +37,19 @@ pub enum Error {
 pub enum ListError {}
 
 #[derive(Error, Debug)]
-pub enum UninstallError {}
+pub enum UninstallError {
+    #[error(transparent)]
+    NoHomeDirectory(#[from] NoHomeDirectoryError),
+
+    #[error(transparent)]
+    RemoveDirAll(#[from] RemoveDirAllError),
+
+    #[error(transparent)]
+    RemoveFile(#[from] RemoveFileError),
+
+    #[error(transparent)]
+    Rename(#[from] RenameError),
+}
 
 #[derive(Error, Debug)]
 pub enum SelfUninstallError {}

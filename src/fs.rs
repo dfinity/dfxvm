@@ -1,6 +1,6 @@
 use crate::error::fs::{
     CanonicalizePathError, CreateDirAllError, CreateFileError, OpenFileError, ReadFileError,
-    ReadToStringError, RenameError, WriteFileError,
+    ReadToStringError, RemoveDirAllError, RemoveFileError, RenameError, WriteFileError,
 };
 use std::path::{Path, PathBuf};
 
@@ -34,6 +34,20 @@ pub fn read(path: &Path) -> Result<Vec<u8>, ReadFileError> {
 
 pub fn read_to_string(path: &Path) -> Result<String, ReadToStringError> {
     std::fs::read_to_string(path).map_err(|source| ReadToStringError {
+        path: path.to_path_buf(),
+        source,
+    })
+}
+
+pub fn remove_dir_all(path: &Path) -> Result<(), RemoveDirAllError> {
+    std::fs::remove_dir_all(path).map_err(|source| RemoveDirAllError {
+        path: path.to_path_buf(),
+        source,
+    })
+}
+
+pub fn remove_file(path: &Path) -> Result<(), RemoveFileError> {
+    std::fs::remove_file(path).map_err(|source| RemoveFileError {
         path: path.to_path_buf(),
         source,
     })

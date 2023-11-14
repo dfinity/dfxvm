@@ -66,8 +66,20 @@ impl TempHomeDir {
         command
     }
 
+    pub fn versions_dir(&self) -> &Path {
+        &self.versions_dir
+    }
+
     pub fn dfx_version_dir(&self, version: &str) -> PathBuf {
         self.versions_dir.join(version)
+    }
+
+    pub fn dfx_version_dirs(&self) -> Vec<String> {
+        self.versions_dir
+            .read_dir()
+            .unwrap()
+            .map(|entry| entry.unwrap().file_name().into_string().unwrap())
+            .collect()
     }
 
     pub fn installed_dfx_path(&self, version: &str) -> PathBuf {
