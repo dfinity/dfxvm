@@ -89,7 +89,7 @@ pub async fn main(args: &[OsString]) -> Result<ExitCode, dfxvm::Error> {
             SelfCommand::Uninstall(_opts) => self_uninstall()?,
         },
         Command::Uninstall(opts) => uninstall(opts.version)?,
-        Command::Update(_opts) => update()?,
+        Command::Update(_opts) => update().await?,
     };
     Ok(ExitCode::SUCCESS)
 }

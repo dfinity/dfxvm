@@ -34,6 +34,10 @@ impl Settings {
         self.set_field("download_url_template", url_template);
     }
 
+    pub fn write_manifest_url(&self, url_template: &str) {
+        self.set_field("manifest_url", url_template);
+    }
+
     pub fn write(&self, s: &str) {
         create_dir_all(self.path.parent().unwrap()).unwrap();
         std::fs::write(&self.path, s).unwrap();
