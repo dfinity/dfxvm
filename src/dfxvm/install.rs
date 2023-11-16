@@ -10,12 +10,11 @@ use crate::error::{
         InstallError::{CreateTempDir, CreateTempDirIn},
         VerifyChecksumError,
         VerifyChecksumError::{HashMismatch, MalformedChecksumFile},
-        WrappedReqwestError,
     },
     fs::WriteFileError,
+    reqwest::WrappedReqwestError,
     Retryable,
 };
-
 use crate::fs::{create_dir_all, create_file, open_file, read_to_string, rename};
 use crate::locations::Locations;
 use crate::log::log_error;
