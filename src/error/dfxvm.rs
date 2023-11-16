@@ -1,8 +1,10 @@
+use crate::error::dfxvm::update::UpdateError;
 use crate::error::{dfxvm::default::DefaultError, dfxvm::install::InstallError};
 use thiserror::Error;
 
 pub mod default;
 pub mod install;
+pub mod update;
 
 #[derive(Error, Debug)]
 pub enum Error {
@@ -33,9 +35,6 @@ pub enum ListError {}
 
 #[derive(Error, Debug)]
 pub enum UninstallError {}
-
-#[derive(Error, Debug)]
-pub enum UpdateError {}
 
 #[derive(Error, Debug)]
 pub enum SelfUninstallError {}

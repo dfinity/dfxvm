@@ -1,4 +1,5 @@
 use crate::common::{ReleaseAsset, TempHomeDir};
+use httptest::http::response;
 use httptest::{matchers::request, responders::status_code, Expectation, Server};
 
 pub struct ReleaseServer {
@@ -14,6 +15,8 @@ impl ReleaseServer {
         home_dir
             .settings()
             .write_download_url_template(&download_url_template);
+        let manifest_url = server.url_str("/manifest.json");
+        home_dir.settings().write_manifest_url(&manifest_url);
         Self { server }
     }
 
@@ -28,6 +31,17 @@ impl ReleaseServer {
         self.server.expect(
             Expectation::matching(request::method_path("GET", url_path(asset)))
                 .respond_with(status_code(404)),
+        );
+    }
+
+    pub fn expect_get_manifest(&self, contents: &str) {
+        self.server.expect(
+            Expectation::matching(request::method_path("GET", "/manifest.json")).respond_with(
+                response::Builder::new()
+                    .status(200)
+                    .body(contents.as_bytes().to_vec())
+                    .unwrap(),
+            ),
         );
     }
 }

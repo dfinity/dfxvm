@@ -1,5 +1,6 @@
 use flate2::write::GzEncoder;
 use flate2::Compression;
+use serde_json::json;
 use sha2::{Digest, Sha256};
 use std::io::Write;
 use tar::Builder;
@@ -48,4 +49,17 @@ set -e
 {snippet}
 "#
     )
+}
+
+pub fn manifest_json(latest: &str) -> String {
+    json!({
+        "tags": {
+            "latest": latest
+        },
+        "versions": [
+            "0.5.0",
+            "0.5.2"
+        ]
+    })
+    .to_string()
 }

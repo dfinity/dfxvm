@@ -6,6 +6,7 @@ use serde_json::Value;
 use std::path::Path;
 
 const DEFAULT_DOWNLOAD_URL_TEMPLATE: &str = "https://github.com/dfinity/sdk/releases/download/{{version}}/dfx-{{version}}-{{arch}}-{{platform}}.tar.gz";
+const DEFAULT_MANIFEST_URL: &str = "https://sdk.dfinity.org/manifest.json";
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Settings {
@@ -13,10 +14,13 @@ pub struct Settings {
     pub default_version: Option<Version>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub download_url_template: Option<String>,
+    download_url_template: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    manifest_url: Option<String>,
 
     #[serde(flatten)]
-    pub extra: Value,
+    extra: Value,
 }
 
 impl Settings {
@@ -32,6 +36,12 @@ impl Settings {
         } else {
             Ok(Self::default())
         }
+    }
+
+    pub fn manifest_url(&self) -> String {
+        self.manifest_url
+            .clone()
+            .unwrap_or_else(|| DEFAULT_MANIFEST_URL.to_string())
     }
 
     pub fn save(&self, path: &Path) -> Result<(), SaveJsonFileError> {

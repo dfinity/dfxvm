@@ -11,9 +11,14 @@
       "type": "string"
     },
     "download_url_template": {
-      "description": "The template for the URL to the dfx release tarball.  The template can contain the following variables: {{version}}: The dfx version; {{arch}}: The machine architecture: \"x86_64\"; {{platform}}: The machine platform: \"linux\" or \"darwin\"",
+      "description": "The template for the URL of a dfx release tarball.  The template can contain the following variables: {{version}}: The dfx version; {{arch}}: The machine architecture: \"x86_64\"; {{platform}}: The machine platform: \"linux\" or \"darwin\"",
       "type": "string",
       "default": "https://github.com/dfinity/sdk/releases/download/{{version}}/dfx-{{version}}-{{arch}}-{{platform}}.tar.gz"
+    },
+    "manifest_url": {
+      "description": "The URL of the dfx public manifest",
+      "type": "string",
+      "default": "https://sdk.dfinity.org/manifest.json"
     }
   }
 }
