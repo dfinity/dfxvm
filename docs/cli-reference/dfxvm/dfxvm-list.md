@@ -1,3 +1,18 @@
 # dfxvm list
 
 Lists the installed versions of dfx.
+
+## Usage
+
+```bash
+dfxvm list
+```
+
+## Examples
+
+```bash
+$ dfxvm list
+0.14.4
+0.15.1 (default)
+0.15.2-beta.1
+```

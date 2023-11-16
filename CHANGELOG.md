@@ -12,3 +12,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `dfxvm default` command, which sets or displays the default dfx version.
 - Added `dfxvm update` command, which sets the latest dfx version as the default.
 - Added `dfxvm uninstall` command, which uninstalls a dfx version.
+- Added `dfxvm list` command, which lists all installed dfx versions.
