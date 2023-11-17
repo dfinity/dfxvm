@@ -2,7 +2,9 @@ use crate::error::{
     dfxvm::{default::DefaultError, install::InstallError, update::UpdateError},
     env::NoHomeDirectoryError,
     fs::{RemoveDirAllError, RemoveFileError, RenameError},
+    json::LoadJsonFileError,
 };
+use std::path::PathBuf;
 use thiserror::Error;
 
 pub mod default;
@@ -34,7 +36,19 @@ pub enum Error {
 }
 
 #[derive(Error, Debug)]
-pub enum ListError {}
+pub enum ListError {
+    #[error(transparent)]
+    LoadJsonFile(#[from] LoadJsonFileError),
+
+    #[error(transparent)]
+    NoHomeDirectory(#[from] NoHomeDirectoryError),
+
+    #[error("failed to read directory {path}")]
+    ReadDir {
+        path: PathBuf,
+        source: std::io::Error,
+    },
+}
 
 #[derive(Error, Debug)]
 pub enum UninstallError {
