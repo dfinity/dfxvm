@@ -6,6 +6,7 @@ authors = ["DFINITY Stiftung <sdk@dfinity.org>"]
 description = "dfx version manager"
 repository = "https://github.com/dfinity/dfxvm"
 license = "Apache-2.0"
+publish = false # don't publish to crates.io
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
