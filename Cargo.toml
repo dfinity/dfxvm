@@ -6,6 +6,7 @@ authors = ["DFINITY Stiftung <sdk@dfinity.org>"]
 description = "dfx version manager"
 repository = "https://github.com/dfinity/dfxvm"
 license = "Apache-2.0"
+publish = false # don't publish to crates.io
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -55,3 +56,7 @@ targets = ["x86_64-unknown-linux-gnu", "aarch64-apple-darwin", "x86_64-apple-dar
 pr-run-mode = "plan"
 # The archive format to use for non-windows builds (defaults .tar.xz)
 unix-archive = ".tar.gz"
+# In coordination with "publish = false" at the package level,
+# this makes `cargo dist` generate binaries for the GitHub release,
+# while preventing `cargo release` from publishing to crates.io.
+dist = true
