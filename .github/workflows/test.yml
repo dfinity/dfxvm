@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - text-file-busy
   pull_request:
 
 jobs:
