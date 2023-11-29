@@ -6,7 +6,10 @@ use std::process::Command;
 pub fn create_executable(path: &Path, contents: &str) {
     std::fs::write(path, contents).unwrap();
     set_executable(path);
+    wait_until_file_is_not_busy(path);
+}
 
+pub fn wait_until_file_is_not_busy(path: &Path) {
     let backoff = ExponentialBackoff::default();
     retry(backoff, || {
         let mut command = Command::new(path);

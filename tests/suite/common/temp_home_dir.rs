@@ -1,4 +1,4 @@
-use crate::common::executable::create_executable;
+use crate::common::executable::{create_executable, wait_until_file_is_not_busy};
 use crate::common::{dfxvm_path, file_contents, Settings};
 use directories::ProjectDirs;
 use std::env;
@@ -64,6 +64,8 @@ impl TempHomeDir {
     pub fn command(&self, filename: &str) -> Command {
         let path = self.tempdir.path().join(filename);
         std::fs::copy(dfxvm_path(), &path).unwrap();
+        wait_until_file_is_not_busy(&path);
+
         let mut command = Command::new(path);
         command.env("HOME", self.tempdir.path());
         command
