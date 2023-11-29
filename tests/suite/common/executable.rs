@@ -11,10 +11,11 @@ pub fn create_executable(path: &Path, contents: &str) {
     retry(backoff, || {
         let mut command = Command::new(path);
         let result = command.output();
-        // check for os code 26 (text file busy)
+
+        const TEXT_FILE_BUSY: i32 = 26;
         match result {
             Ok(output) => Ok(output),
-            Err(err) if matches!(err.raw_os_error(), Some(26)) => {
+            Err(err) if matches!(err.raw_os_error(), Some(TEXT_FILE_BUSY)) => {
                 Err(backoff::Error::transient(err))
             }
             Err(other) => Err(backoff::Error::permanent(other)),
