@@ -1,5 +1,6 @@
 mod executable;
 pub mod file_contents;
+pub mod project_dirs;
 mod release_asset;
 mod release_server;
 mod settings;

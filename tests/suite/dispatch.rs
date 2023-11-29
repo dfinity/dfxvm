@@ -39,7 +39,7 @@ fn dispatch_to_dfxvm_init_exact() {
 #[test]
 fn dispatch_to_dfxvm_init_by_prefix() {
     let home_dir = TempHomeDir::new();
-    let mut cmd = home_dir.command("dfxvm-init (3)");
+    let mut cmd = home_dir.dfxvm_as_command_named("dfxvm-init (3)");
 
     cmd.assert()
         .success()
@@ -49,7 +49,7 @@ fn dispatch_to_dfxvm_init_by_prefix() {
 #[test]
 fn dispatch_to_unknown() {
     let home_dir = TempHomeDir::new();
-    let mut cmd = home_dir.command("called-something-else");
+    let mut cmd = home_dir.dfxvm_as_command_named("called-something-else");
 
     cmd.assert()
         .failure()

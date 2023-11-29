@@ -1,36 +1,13 @@
 use crate::common::executable::{create_executable, wait_until_file_is_not_busy};
-use crate::common::{dfxvm_path, file_contents, Settings};
-use directories::ProjectDirs;
-use std::env;
+use crate::common::{dfxvm_path, file_contents, project_dirs, Settings};
 use std::fs::create_dir_all;
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use std::sync::Mutex;
 use tempfile::TempDir;
-
-static HOME_LOCK: Mutex<()> = Mutex::new(());
-
-fn with_home<T, F>(temp_home: &Path, func: F) -> T
-where
-    F: FnOnce() -> T,
-{
-    let _lock = HOME_LOCK.lock().unwrap();
-    let prev_home = env::var("HOME").unwrap();
-    env::set_var("HOME", temp_home);
-    let result = func();
-    env::set_var("HOME", prev_home);
-
-    result
-}
-
-fn project_dirs(home: &Path) -> ProjectDirs {
-    with_home(home, || ProjectDirs::from("org", "dfinity", "dfx").unwrap())
-}
 
 pub struct TempHomeDir {
     tempdir: TempDir,
-    versions_dir: PathBuf,
-    config_dir: PathBuf,
+    xdg_data_home: Option<PathBuf>,
 }
 
 impl TempHomeDir {
@@ -39,50 +16,76 @@ impl TempHomeDir {
             .prefix("dfxvm-integration-tests-home")
             .tempdir()
             .unwrap();
-        let project_dirs = project_dirs(tempdir.path());
-        let versions_dir = project_dirs.data_local_dir().join("versions");
-        let config_dir = tempdir.path().join(".config").join("dfx");
+        let xdg_data_home = None;
         Self {
             tempdir,
-            versions_dir,
-            config_dir,
+            xdg_data_home,
         }
     }
 
+    pub fn with_xdg_data_home(self, xdg_data_home: &Path) -> Self {
+        Self {
+            xdg_data_home: Some(xdg_data_home.to_path_buf()),
+            ..self
+        }
+    }
+
+    pub fn path(&self) -> &Path {
+        self.tempdir.path()
+    }
+
     pub fn dfx(&self) -> Command {
-        self.command("dfx")
+        self.dfxvm_as_command_named("dfx")
     }
 
     pub fn dfxvm(&self) -> Command {
-        self.command("dfxvm")
+        self.dfxvm_as_command_named("dfxvm")
     }
 
     pub fn dfxvm_init(&self) -> Command {
-        self.command("dfxvm-init")
+        self.dfxvm_as_command_named("dfxvm-init")
     }
 
-    pub fn command(&self, filename: &str) -> Command {
-        let path = self.tempdir.path().join(filename);
+    pub fn new_command(&self, program: &Path) -> Command {
+        let mut command = Command::new(program);
+
+        command.env_clear();
+        command.env("PATH", "/usr/bin:/bin:/usr/sbin:/sbin");
+        command.env("HOME", self.path());
+        if let Some(xdg_data_home) = &self.xdg_data_home {
+            command.env("XDG_DATA_HOME", xdg_data_home);
+        }
+
+        command
+    }
+
+    pub fn dfxvm_as_command_named(&self, filename: &str) -> Command {
+        let path = self.path().join(filename);
         if !path.exists() {
             std::fs::copy(dfxvm_path(), &path).unwrap();
             wait_until_file_is_not_busy(&path);
         }
-
-        let mut command = Command::new(path);
-        command.env("HOME", self.tempdir.path());
-        command
+        self.new_command(&path)
     }
 
-    pub fn versions_dir(&self) -> &Path {
-        &self.versions_dir
+    pub fn config_dir(&self) -> PathBuf {
+        self.path().join(".config").join("dfx")
+    }
+
+    pub fn data_local_dir(&self) -> PathBuf {
+        project_dirs::data_local_dir(self.path(), self.xdg_data_home.as_deref())
+    }
+
+    pub fn versions_dir(&self) -> PathBuf {
+        self.data_local_dir().join("versions")
     }
 
     pub fn dfx_version_dir(&self, version: &str) -> PathBuf {
-        self.versions_dir.join(version)
+        self.versions_dir().join(version)
     }
 
     pub fn dfx_version_dirs(&self) -> Vec<String> {
-        self.versions_dir
+        self.versions_dir()
             .read_dir()
             .unwrap()
             .map(|entry| entry.unwrap().file_name().into_string().unwrap())
@@ -94,7 +97,7 @@ impl TempHomeDir {
     }
 
     pub fn create_executable_dfx_script(&self, version: &str, snippet: &str) -> PathBuf {
-        let version = self.versions_dir.join(version);
+        let version = self.dfx_version_dir(version);
         create_dir_all(&version).unwrap();
         let bin_path = version.join("dfx");
         let script = file_contents::bash_script(snippet);
@@ -103,13 +106,13 @@ impl TempHomeDir {
     }
 
     pub fn settings(&self) -> Settings {
-        Settings::new(self.config_dir.join("version-manager.json"))
+        Settings::new(self.config_dir().join("version-manager.json"))
     }
 
     pub fn new_project_temp_dir(&self) -> TempDir {
         tempfile::Builder::new()
             .prefix("integration-test-project")
-            .tempdir_in(self.tempdir.path())
+            .tempdir_in(self.path())
             .unwrap()
     }
 }

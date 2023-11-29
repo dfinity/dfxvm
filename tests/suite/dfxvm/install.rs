@@ -1,6 +1,7 @@
-use crate::common::{ReleaseAsset, ReleaseServer, TempHomeDir};
+use crate::common::{project_dirs, ReleaseAsset, ReleaseServer, TempHomeDir};
 use assert_cmd::prelude::*;
 use predicates::str::*;
+use std::path::PathBuf;
 use std::process::Command;
 
 #[test]
@@ -17,6 +18,78 @@ fn successful_install() {
     cmd.arg("install").arg("0.15.0");
     cmd.assert().success();
     let dfx_path = home_dir.installed_dfx_path("0.15.0");
+    assert!(dfx_path.exists());
+    let mut dfx_cmd = Command::new(dfx_path);
+    dfx_cmd.arg("--version");
+    dfx_cmd.assert().success().stdout("this is dfx 0.15.0\n");
+}
+
+#[test]
+fn successful_install_with_absolute_xdg_data_home() {
+    let home_dir = TempHomeDir::new();
+    let xdg_data_home = home_dir.path().join("xdg/data-home");
+    let home_dir = home_dir.with_xdg_data_home(&xdg_data_home);
+    let server = ReleaseServer::new(&home_dir);
+
+    let tarball = ReleaseAsset::dfx_tarball("0.15.0", "echo 'this is dfx 0.15.0'");
+    let sha256 = ReleaseAsset::sha256(&tarball);
+    server.expect_get(&tarball);
+    server.expect_get(&sha256);
+
+    let mut cmd = home_dir.dfxvm();
+    cmd.arg("install").arg("0.15.0");
+    cmd.assert().success();
+    let dfx_path = home_dir.installed_dfx_path("0.15.0");
+    assert!(dfx_path.exists());
+    let mut dfx_cmd = Command::new(dfx_path);
+    dfx_cmd.arg("--version");
+    dfx_cmd.assert().success().stdout("this is dfx 0.15.0\n");
+}
+
+#[test]
+fn successful_install_with_relative_xdg_data_home() {
+    let home_dir = TempHomeDir::new().with_xdg_data_home(&PathBuf::from("relative/xdg/data-home"));
+    let server = ReleaseServer::new(&home_dir);
+
+    let tarball = ReleaseAsset::dfx_tarball("0.15.0", "echo 'this is dfx 0.15.0'");
+    let sha256 = ReleaseAsset::sha256(&tarball);
+    server.expect_get(&tarball);
+    server.expect_get(&sha256);
+
+    let mut cmd = home_dir.dfxvm();
+    cmd.arg("install").arg("0.15.0");
+    cmd.assert().success();
+
+    // relative xdg_data_home is same as no xdg_data_home
+    let dfx_path = project_dirs::data_local_dir(home_dir.path(), None)
+        .join("versions")
+        .join("0.15.0")
+        .join("dfx");
+    assert!(dfx_path.exists());
+    let mut dfx_cmd = Command::new(dfx_path);
+    dfx_cmd.arg("--version");
+    dfx_cmd.assert().success().stdout("this is dfx 0.15.0\n");
+}
+
+#[test]
+fn successful_install_with_empty_xdg_data_home() {
+    let home_dir = TempHomeDir::new().with_xdg_data_home(&PathBuf::from(""));
+    let server = ReleaseServer::new(&home_dir);
+
+    let tarball = ReleaseAsset::dfx_tarball("0.15.0", "echo 'this is dfx 0.15.0'");
+    let sha256 = ReleaseAsset::sha256(&tarball);
+    server.expect_get(&tarball);
+    server.expect_get(&sha256);
+
+    let mut cmd = home_dir.dfxvm();
+    cmd.arg("install").arg("0.15.0");
+    cmd.assert().success();
+
+    // empty xdg_data_home is same as no xdg_data_home
+    let dfx_path = project_dirs::data_local_dir(home_dir.path(), None)
+        .join("versions")
+        .join("0.15.0")
+        .join("dfx");
     assert!(dfx_path.exists());
     let mut dfx_cmd = Command::new(dfx_path);
     dfx_cmd.arg("--version");
