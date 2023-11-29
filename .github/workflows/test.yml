@@ -27,7 +27,7 @@ jobs:
           key: ${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-test-1
 
       - name: Run Tests
-        run: cargo test
+        run: RUST_BACKTRACE=1 cargo test
 
   aggregate:
     name: test:required
