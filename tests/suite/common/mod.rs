@@ -1,3 +1,4 @@
+mod executable;
 pub mod file_contents;
 mod release_asset;
 mod release_server;

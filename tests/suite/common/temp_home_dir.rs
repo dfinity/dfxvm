@@ -1,8 +1,8 @@
+use crate::common::executable::create_executable;
 use crate::common::{dfxvm_path, file_contents, Settings};
 use directories::ProjectDirs;
 use std::env;
 use std::fs::create_dir_all;
-use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::Mutex;
@@ -94,8 +94,7 @@ impl TempHomeDir {
         create_dir_all(&version).unwrap();
         let bin_path = version.join("dfx");
         let script = file_contents::bash_script(snippet);
-        std::fs::write(&bin_path, script).unwrap();
-        set_executable(&bin_path);
+        create_executable(&bin_path, &script);
         bin_path
     }
 
@@ -109,10 +108,4 @@ impl TempHomeDir {
             .tempdir_in(self.tempdir.path())
             .unwrap()
     }
-}
-
-fn set_executable(bin_path: &Path) {
-    let mut perms = std::fs::metadata(bin_path).unwrap().permissions();
-    perms.set_mode(perms.mode() | 0o500);
-    std::fs::set_permissions(bin_path, perms).unwrap();
 }
