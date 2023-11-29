@@ -63,8 +63,10 @@ impl TempHomeDir {
 
     pub fn command(&self, filename: &str) -> Command {
         let path = self.tempdir.path().join(filename);
-        std::fs::copy(dfxvm_path(), &path).unwrap();
-        wait_until_file_is_not_busy(&path);
+        if !path.exists() {
+            std::fs::copy(dfxvm_path(), &path).unwrap();
+            wait_until_file_is_not_busy(&path);
+        }
 
         let mut command = Command::new(path);
         command.env("HOME", self.tempdir.path());
