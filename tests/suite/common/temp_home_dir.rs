@@ -6,7 +6,7 @@ use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::Mutex;
-use tempdir::TempDir;
+use tempfile::TempDir;
 
 static HOME_LOCK: Mutex<()> = Mutex::new(());
 
@@ -35,7 +35,10 @@ pub struct TempHomeDir {
 
 impl TempHomeDir {
     pub fn new() -> Self {
-        let tempdir = TempDir::new("dfxvm-integration-tests-home").unwrap();
+        let tempdir = tempfile::Builder::new()
+            .prefix("dfxvm-integration-tests-home")
+            .tempdir()
+            .unwrap();
         let project_dirs = project_dirs(tempdir.path());
         let versions_dir = project_dirs.data_local_dir().join("versions");
         let config_dir = tempdir.path().join(".config").join("dfx");
@@ -98,6 +101,13 @@ impl TempHomeDir {
 
     pub fn settings(&self) -> Settings {
         Settings::new(self.config_dir.join("version-manager.json"))
+    }
+
+    pub fn new_project_temp_dir(&self) -> TempDir {
+        tempfile::Builder::new()
+            .prefix("integration-test-project")
+            .tempdir_in(self.tempdir.path())
+            .unwrap()
     }
 }
 
