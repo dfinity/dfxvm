@@ -2,7 +2,6 @@ use crate::common::TempHomeDir;
 use assert_cmd::prelude::*;
 use predicates::str::*;
 use std::os::unix::fs::PermissionsExt;
-use tempdir::TempDir;
 
 #[test]
 fn no_version_anywhere() {
@@ -75,7 +74,7 @@ fn version_from_dfx_json() {
 
     let mut cmd = home_dir.dfx();
 
-    let tempdir = TempDir::new("integration-test-project").unwrap();
+    let tempdir = home_dir.new_project_temp_dir();
     let dfx_json = tempdir.path().join("dfx.json");
     std::fs::write(dfx_json, r#"{"dfx": "0.7.8"}"#).unwrap();
     cmd.current_dir(&tempdir);
@@ -132,7 +131,7 @@ fn version_from_environment_takes_precedence_over_dfx_json() {
 
     let mut cmd = home_dir.dfx();
 
-    let tempdir = TempDir::new("integration-test-project").unwrap();
+    let tempdir = home_dir.new_project_temp_dir();
     let dfx_json = tempdir.path().join("dfx.json");
     std::fs::write(dfx_json, r#"{"dfx": "0.9.9"}"#).unwrap();
     cmd.current_dir(&tempdir);
@@ -156,7 +155,7 @@ fn version_from_dfx_json_takes_precedence_over_settings() {
 
     let mut cmd = home_dir.dfx();
 
-    let tempdir = TempDir::new("integration-test-project").unwrap();
+    let tempdir = home_dir.new_project_temp_dir();
     let dfx_json = tempdir.path().join("dfx.json");
     std::fs::write(dfx_json, r#"{"dfx": "0.7.4"}"#).unwrap();
     cmd.current_dir(&tempdir);
@@ -177,7 +176,7 @@ fn dfx_json_with_no_version() {
 
     let mut cmd = home_dir.dfx();
 
-    let tempdir = TempDir::new("integration-test-project").unwrap();
+    let tempdir = home_dir.new_project_temp_dir();
     let dfx_json = tempdir.path().join("dfx.json");
     std::fs::write(dfx_json, r#"{}"#).unwrap();
     cmd.current_dir(&tempdir);
@@ -196,7 +195,7 @@ fn version_from_dfx_json_ignores_other_fields() {
         "echo 'this is the zero point seven point eight dfx executable'",
     );
 
-    let tempdir = TempDir::new("integration-test-project").unwrap();
+    let tempdir = home_dir.new_project_temp_dir();
     let dfx_json = tempdir.path().join("dfx.json");
     std::fs::write(dfx_json, r#"{"dfx": "0.7.8", "other": "ignored"}"#).unwrap();
     cmd.current_dir(&tempdir);
@@ -215,7 +214,7 @@ fn searches_for_dfx_json_in_parent_directories() {
         "echo 'this is the zero point seven point nine dfx executable'",
     );
 
-    let tempdir = TempDir::new("integration-test-project").unwrap();
+    let tempdir = home_dir.new_project_temp_dir();
     let x = tempdir.path().join("x");
     let y = x.join("y");
     let z = y.join("z");
@@ -347,7 +346,7 @@ fn malformed_json_in_dfx_json() {
     let home_dir = TempHomeDir::new();
     let mut cmd = home_dir.dfx();
 
-    let tempdir = TempDir::new("integration-test-project").unwrap();
+    let tempdir = home_dir.new_project_temp_dir();
     let dfx_json = tempdir.path().join("dfx.json");
     std::fs::write(dfx_json, r#"{ not valid json }"#).unwrap();
     cmd.current_dir(&tempdir);
@@ -363,7 +362,7 @@ fn malformed_version_in_dfx_json() {
     let home_dir = TempHomeDir::new();
     let mut cmd = home_dir.dfx();
 
-    let tempdir = TempDir::new("integration-test-project").unwrap();
+    let tempdir = home_dir.new_project_temp_dir();
     let dfx_json = tempdir.path().join("dfx.json");
     std::fs::write(dfx_json, r#"{"dfx": "3.x"}"#).unwrap();
     cmd.current_dir(&tempdir);

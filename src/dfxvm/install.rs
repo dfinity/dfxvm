@@ -30,7 +30,6 @@ use std::cmp::min;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use tar::Archive;
-use tempdir::TempDir;
 
 pub fn installed(version: &Version, locations: &Locations) -> bool {
     locations.version_dir(version).exists()
@@ -48,17 +47,21 @@ pub async fn install(version: Version) -> Result<(), InstallError> {
 
     info!("installing dfx {version}");
 
-    let download_dir = TempDir::new("dfxvm-download").map_err(CreateTempDir)?;
+    let download_dir = tempfile::Builder::new()
+        .prefix("dfxvm-download")
+        .tempdir()
+        .map_err(CreateTempDir)?;
 
     let downloaded_tarball_path =
         download_verified_tarball(&version, download_dir.path(), &settings).await?;
 
-    let install_dir = TempDir::new_in(locations.versions_dir(), ".install").map_err(|source| {
-        CreateTempDirIn {
+    let install_dir = tempfile::Builder::new()
+        .prefix(".install")
+        .tempdir_in(locations.versions_dir())
+        .map_err(|source| CreateTempDirIn {
             path: locations.versions_dir().to_path_buf(),
             source,
-        }
-    })?;
+        })?;
 
     extract_binary(&downloaded_tarball_path, install_dir.path())?;
 
