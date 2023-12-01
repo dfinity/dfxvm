@@ -9,6 +9,14 @@ pub struct CanonicalizePathError {
 }
 
 #[derive(Error, Debug)]
+#[error("failed to copy {from} to {to}")]
+pub struct CopyFileError {
+    pub from: PathBuf,
+    pub to: PathBuf,
+    pub source: std::io::Error,
+}
+
+#[derive(Error, Debug)]
 #[error("failed to create directory {path} and parents")]
 pub struct CreateDirAllError {
     pub path: PathBuf,
@@ -32,6 +40,13 @@ pub struct OpenFileError {
 #[derive(Error, Debug)]
 #[error("failed to read {path}")]
 pub struct ReadFileError {
+    pub path: PathBuf,
+    pub source: std::io::Error,
+}
+
+#[derive(Error, Debug)]
+#[error("failed to read metadata for {path}")]
+pub struct ReadMetadataError {
     pub path: PathBuf,
     pub source: std::io::Error,
 }
@@ -62,6 +77,13 @@ pub struct RemoveFileError {
 pub struct RenameError {
     pub from: PathBuf,
     pub to: PathBuf,
+    pub source: std::io::Error,
+}
+
+#[derive(Error, Debug)]
+#[error("failed to set permissions for {path}")]
+pub struct SetPermissionsError {
+    pub path: PathBuf,
     pub source: std::io::Error,
 }
 

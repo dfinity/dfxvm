@@ -10,15 +10,15 @@ use semver::Version;
 pub async fn default(version: Option<Version>) -> Result<(), DefaultError> {
     let locations = Locations::new()?;
     if let Some(version) = version {
-        set_default(version, &locations).await?;
+        set_default(&version, &locations).await?;
     } else {
         display_default(&locations)?;
     }
     Ok(())
 }
 
-pub async fn set_default(version: Version, locations: &Locations) -> Result<(), SetDefaultError> {
-    if installed(&version, locations) {
+pub async fn set_default(version: &Version, locations: &Locations) -> Result<(), SetDefaultError> {
+    if installed(version, locations) {
         info!("using existing install for dfx {version}");
     } else {
         install(version.clone()).await?;
@@ -27,7 +27,7 @@ pub async fn set_default(version: Version, locations: &Locations) -> Result<(), 
     let path = locations.settings_path();
     let mut settings = Settings::load_or_default(&path)?;
 
-    if matches!(settings.default_version, Some(ref v) if v == &version) {
+    if matches!(settings.default_version, Some(ref v) if v == version) {
         info!("dfx {} is already the default version", version);
     } else {
         settings.default_version = Some(version.clone());

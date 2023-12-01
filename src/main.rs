@@ -12,6 +12,7 @@ mod dfxvm_init;
 mod env;
 mod error;
 mod fs;
+mod installation;
 mod json;
 mod locations;
 mod settings;

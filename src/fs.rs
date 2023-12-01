@@ -1,6 +1,7 @@
 use crate::error::fs::{
-    CanonicalizePathError, CreateDirAllError, CreateFileError, OpenFileError, ReadFileError,
-    ReadToStringError, RemoveDirAllError, RemoveFileError, RenameError, WriteFileError,
+    CanonicalizePathError, CopyFileError, CreateDirAllError, CreateFileError, OpenFileError,
+    ReadFileError, ReadMetadataError, ReadToStringError, RemoveDirAllError, RemoveFileError,
+    RenameError, SetPermissionsError, WriteFileError,
 };
 use std::path::{Path, PathBuf};
 
@@ -11,8 +12,23 @@ pub fn canonicalize(path: &Path) -> Result<PathBuf, CanonicalizePathError> {
     })
 }
 
+pub fn copy(from: &Path, to: &Path) -> Result<u64, CopyFileError> {
+    std::fs::copy(from, to).map_err(|source| CopyFileError {
+        from: from.to_path_buf(),
+        to: to.to_path_buf(),
+        source,
+    })
+}
+
 pub fn create_file(path: &Path) -> Result<std::fs::File, CreateFileError> {
     std::fs::File::create(path).map_err(|source| CreateFileError {
+        path: path.to_path_buf(),
+        source,
+    })
+}
+
+pub fn metadata(path: &Path) -> Result<std::fs::Metadata, ReadMetadataError> {
+    std::fs::metadata(path).map_err(|source| ReadMetadataError {
         path: path.to_path_buf(),
         source,
     })
@@ -63,6 +79,16 @@ pub fn rename(from: &Path, to: &Path) -> Result<(), RenameError> {
 
 pub fn create_dir_all(path: &Path) -> Result<(), CreateDirAllError> {
     std::fs::create_dir_all(path).map_err(|source| CreateDirAllError {
+        path: path.to_path_buf(),
+        source,
+    })
+}
+
+pub fn set_permissions(
+    path: &Path,
+    permissions: std::fs::Permissions,
+) -> Result<(), SetPermissionsError> {
+    std::fs::set_permissions(path, permissions).map_err(|source| SetPermissionsError {
         path: path.to_path_buf(),
         source,
     })

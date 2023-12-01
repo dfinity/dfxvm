@@ -1,5 +1,4 @@
 use crate::error::{
-    dfxvm::{default::DefaultError, install::InstallError, update::UpdateError},
     env::NoHomeDirectoryError,
     fs::{RemoveDirAllError, RemoveFileError, RenameError},
     json::LoadJsonFileError,
@@ -10,6 +9,11 @@ use thiserror::Error;
 pub mod default;
 pub mod install;
 pub mod update;
+
+pub use default::DefaultError;
+pub use default::SetDefaultError;
+pub use install::InstallError;
+pub use update::UpdateError;
 
 #[derive(Error, Debug)]
 pub enum Error {
