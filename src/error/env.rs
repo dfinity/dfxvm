@@ -8,5 +8,12 @@ pub struct GetCurrentDirError {
 }
 
 #[derive(Error, Debug)]
+#[error("failed to get path of current executable")]
+pub struct GetCurrentExeError {
+    #[from]
+    pub source: std::io::Error,
+}
+
+#[derive(Error, Debug)]
 #[error("no HOME in environment")]
 pub struct NoHomeDirectoryError;

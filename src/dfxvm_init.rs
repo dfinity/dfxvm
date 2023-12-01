@@ -1,8 +1,6 @@
-use crate::error::dfxvm_init;
-use std::ffi::OsString;
-use std::process::ExitCode;
+mod cli;
+mod initialize;
+mod plan;
+mod ui;
 
-pub fn main(_args: &[OsString]) -> Result<ExitCode, dfxvm_init::Error> {
-    println!("Hello, world! (dfxvm-init mode)");
-    Ok(ExitCode::SUCCESS)
-}
+pub use cli::main;

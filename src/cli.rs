@@ -16,7 +16,7 @@ pub async fn main(args: &[OsString]) -> ExitCode {
 
 pub async fn dispatch(args: &[OsString]) -> Result<ExitCode, DispatchError> {
     let exit_code = match determine_mode(args)? {
-        Init => dfxvm_init::main(args)?,
+        Init => dfxvm_init::main(args).await?,
         Manage => dfxvm::main(args).await?,
         Proxy => dfx::main(args)?,
     };

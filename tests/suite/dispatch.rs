@@ -31,9 +31,10 @@ fn dispatch_to_dfxvm_init_exact() {
     let home_dir = TempHomeDir::new();
     let mut cmd = home_dir.dfxvm_init();
 
-    cmd.assert()
+    cmd.arg("--help")
+        .assert()
         .success()
-        .stdout("Hello, world! (dfxvm-init mode)\n");
+        .stdout(contains("The installer for dfxvm"));
 }
 
 #[test]
@@ -41,9 +42,10 @@ fn dispatch_to_dfxvm_init_by_prefix() {
     let home_dir = TempHomeDir::new();
     let mut cmd = home_dir.dfxvm_as_command_named("dfxvm-init (3)");
 
-    cmd.assert()
+    cmd.arg("--help")
+        .assert()
         .success()
-        .stdout("Hello, world! (dfxvm-init mode)\n");
+        .stdout(contains("The installer for dfxvm"));
 }
 
 #[test]

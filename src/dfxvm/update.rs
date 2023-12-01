@@ -27,7 +27,7 @@ pub async fn update() -> Result<(), UpdateError> {
     let latest_version = manifest.tags.latest;
     info!("latest dfx version is {latest_version}");
 
-    set_default(latest_version, &locations).await?;
+    set_default(&latest_version, &locations).await?;
 
     Ok(())
 }

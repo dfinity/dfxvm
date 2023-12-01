@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `dfxvm update` command, which sets the latest dfx version as the default.
 - Added `dfxvm uninstall` command, which uninstalls a dfx version.
 - Added `dfxvm list` command, which lists all installed dfx versions.
+- Added `dfxvm-init` mode, which installs dfxvm and dfx.
+  - does not yet source the env file in profile scripts.
+  - does not yet clean up previously-installed dfx versions.
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfxvm/compare/828e4ed...HEAD
