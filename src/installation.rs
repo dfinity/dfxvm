@@ -1,5 +1,6 @@
 // "installation" in the noun sense: "the installation"
 mod bin;
+mod dirs;
 mod env;
 
 pub use bin::install_binaries;
