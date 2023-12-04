@@ -1,6 +1,6 @@
 [package]
 name = "dfxvm"
-version = "0.1.1-alpha.2"
+version = "0.1.1"
 edition = "2021"
 authors = ["DFINITY Stiftung <sdk@dfinity.org>"]
 description = "dfx version manager"
