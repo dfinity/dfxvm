@@ -17,6 +17,7 @@ dfxvm-init [--dfx-version <version>] [--proceed]
 |---------------------------| --- |
 | `--dfx-version <version>` | The version of dfx to install. Defaults to the latest dfx version |
 | `--proceed`               | Skip confirmation prompt |
+| `--no-modify-path`        | Do not alter profile scripts to modify the PATH environment variable |
 
 ## Examples
 

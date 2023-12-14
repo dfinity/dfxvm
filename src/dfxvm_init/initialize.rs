@@ -4,9 +4,13 @@ use crate::dfxvm_init::{
     ui,
     ui::Confirmation,
 };
-use crate::error::{dfxvm_init, dfxvm_init::ExecutePlanError, fs::WriteFileError};
-use crate::fs::create_dir_all;
-use crate::installation::{env_file_contents, install_binaries};
+use crate::error::{
+    dfxvm_init,
+    dfxvm_init::{ExecutePlanError, UpdateProfileScriptsError},
+    fs::WriteFileError,
+};
+use crate::fs::{append_to_file, create_dir_all, read_to_string};
+use crate::installation::{env_file_contents, install_binaries, ProfileScript};
 use crate::locations::Locations;
 use std::path::Path;
 
@@ -53,10 +57,44 @@ pub async fn execute(plan: &Plan, locations: &Locations) -> Result<(), ExecutePl
         DfxVersion::Specific(version) => dfxvm::set_default(version, locations).await?,
     }
 
+    if plan.options.modify_path {
+        update_profile_scripts(&plan.profile_scripts)?;
+    }
+
     Ok(())
 }
 
 fn create_env_file(path: &Path) -> Result<(), WriteFileError> {
     info!("creating {}", path.display());
     crate::fs::write(path, env_file_contents())
+}
+
+fn update_profile_scripts(
+    profile_scripts: &Vec<ProfileScript>,
+) -> Result<(), UpdateProfileScriptsError> {
+    for profile_script in profile_scripts {
+        let path = &profile_script.path;
+        let rc = if path.exists() {
+            read_to_string(&profile_script.path)?
+        } else {
+            "".to_string()
+        };
+
+        let source_command = profile_script.source_string();
+        if rc.contains(&source_command) {
+            info!("already updates path: {}", path.display());
+            continue;
+        }
+
+        info!("updating {}", path.display());
+
+        let source_to_append = if rc.ends_with('\n') || rc.is_empty() {
+            source_command
+        } else {
+            format!("\n{}", source_command)
+        };
+
+        append_to_file(&profile_script.path, &source_to_append)?;
+    }
+    Ok(())
 }

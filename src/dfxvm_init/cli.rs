@@ -21,6 +21,10 @@ pub struct Cli {
     /// Automatically confirm options and proceed with install.
     #[clap(long)]
     proceed: bool,
+
+    /// Don't configure the PATH environment variable in profile scripts.
+    #[clap(long)]
+    no_modify_path: bool,
 }
 
 pub async fn main(args: &[OsString]) -> Result<ExitCode, dfxvm_init::Error> {
@@ -34,7 +38,9 @@ pub async fn main(args: &[OsString]) -> Result<ExitCode, dfxvm_init::Error> {
 
     let dfx_version = opts.dfx_version.map_or_else(|| Latest, Specific);
 
-    let options = PlanOptions::new().with_dfx_version(dfx_version);
+    let options = PlanOptions::new()
+        .with_dfx_version(dfx_version)
+        .with_modify_path(!opts.no_modify_path);
 
     initialize(options, confirmation).await?;
 
