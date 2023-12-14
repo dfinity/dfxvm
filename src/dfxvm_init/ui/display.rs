@@ -17,8 +17,9 @@ pub fn introduction(plan: &Plan) {
     println!();
 }
 
-pub fn options(initialization_plan: &Plan) {
-    let dfx_version = match &initialization_plan.dfx_version {
+pub fn options(plan: &Plan) {
+    let options = &plan.options;
+    let dfx_version = match &options.dfx_version {
         DfxVersion::Latest => "latest".to_string(),
         DfxVersion::Specific(version) => version.to_string(),
     };

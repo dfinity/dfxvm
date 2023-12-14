@@ -9,9 +9,27 @@ pub enum DfxVersion {
     Specific(Version),
 }
 
-pub struct Plan {
-    pub bin_dir: PathBuf,
+#[derive(Clone)]
+pub struct PlanOptions {
     pub dfx_version: DfxVersion,
+}
+
+impl PlanOptions {
+    pub fn new() -> Self {
+        Self {
+            dfx_version: DfxVersion::Latest,
+        }
+    }
+
+    pub fn with_dfx_version(self, dfx_version: DfxVersion) -> Self {
+        Self { dfx_version }
+    }
+}
+
+pub struct Plan {
+    pub options: PlanOptions,
+
+    pub bin_dir: PathBuf,
 
     pub env_path: PathBuf,
 
@@ -23,23 +41,19 @@ pub struct Plan {
 }
 
 impl Plan {
-    pub fn new(locations: &Locations) -> Self {
+    pub fn new(options: PlanOptions, locations: &Locations) -> Self {
         let bin_dir = locations.data_local_dir().join("bin");
         let env_path = locations.data_local_dir().join("env");
-        let dfx_version = DfxVersion::Latest;
         let env_path_user_facing = get_env_path_user_facing().to_string();
         Self {
+            options,
             bin_dir,
             env_path,
             env_path_user_facing,
-            dfx_version,
         }
     }
 
-    pub fn with_dfx_version(self, dfx_version: DfxVersion) -> Self {
-        Self {
-            dfx_version,
-            ..self
-        }
+    pub fn with_options(self, options: PlanOptions) -> Self {
+        Self { options, ..self }
     }
 }

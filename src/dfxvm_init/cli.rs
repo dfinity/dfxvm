@@ -1,4 +1,8 @@
 use crate::dfxvm_init::initialize::initialize;
+use crate::dfxvm_init::plan::{
+    DfxVersion::{Latest, Specific},
+    PlanOptions,
+};
 use crate::dfxvm_init::ui::Confirmation;
 use crate::error::dfxvm_init;
 use clap::Parser;
@@ -28,7 +32,11 @@ pub async fn main(args: &[OsString]) -> Result<ExitCode, dfxvm_init::Error> {
         None
     };
 
-    initialize(opts.dfx_version, confirmation).await?;
+    let dfx_version = opts.dfx_version.map_or_else(|| Latest, Specific);
+
+    let options = PlanOptions::new().with_dfx_version(dfx_version);
+
+    initialize(options, confirmation).await?;
 
     Ok(ExitCode::SUCCESS)
 }
