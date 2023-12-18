@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - ens/sdk-1264-update-profile-scripts
   pull_request:
 
 jobs:
