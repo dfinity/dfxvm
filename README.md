@@ -27,11 +27,19 @@ DFX_VERSION=0.15.1 sh -ci "$(curl -fsSL https://raw.githubusercontent.com/dfinit
 ## Contribution
 
 Contributions to dfxvm are welcome! For information about contributing,
-see [CONTRIBUTING.md][CONTRIBUTING.md). Contributors must agree to a [CLA][cla].
+see [CONTRIBUTING.md](CONTRIBUTING.md). Contributors must agree to a [CLA][cla].
 
 ## License
 
+Copyright 2023 DFINITY Stiftung <sdk@dfinity.org>.
+
 dfxvm is licensed under the [Apache 2.0 License](LICENSE).
+
+## Acknowledgements
+
+dfxvm is inspired by, and parts are copied from and/or derived from, [rustup][rustup],
+which is also licensed under the [Apache 2.0 License](LICENSE).
 
 [sdk]: https://github.com/dfinity/sdk
 [cla]: https://github.com/dfinity/cla/blob/main/CLA.md
+[rustup]: https://github.com/rust-lang/rustup
