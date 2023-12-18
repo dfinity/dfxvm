@@ -1,6 +1,6 @@
 use crate::dfxvm;
 use crate::dfxvm_init::{
-    plan::{DfxVersion, Plan},
+    plan::{DfxVersion, Plan, PlanOptions},
     ui,
     ui::Confirmation,
 };
@@ -8,18 +8,14 @@ use crate::error::{dfxvm_init, dfxvm_init::ExecutePlanError, fs::WriteFileError}
 use crate::fs::create_dir_all;
 use crate::installation::{env_file_contents, install_binaries};
 use crate::locations::Locations;
-use semver::Version;
 use std::path::Path;
 
 pub async fn initialize(
-    dfx_version: Option<Version>,
+    options: PlanOptions,
     confirmation: Option<Confirmation>,
 ) -> Result<(), dfxvm_init::Error> {
     let locations = Locations::new()?;
-    let mut plan = Plan::new(&locations);
-    if let Some(version) = dfx_version {
-        plan = plan.with_dfx_version(DfxVersion::Specific(version));
-    }
+    let mut plan = Plan::new(options, &locations);
 
     ui::display::introduction(&plan);
 
@@ -52,7 +48,7 @@ pub async fn execute(plan: &Plan, locations: &Locations) -> Result<(), ExecutePl
 
     install_binaries(&plan.bin_dir)?;
 
-    match &plan.dfx_version {
+    match &plan.options.dfx_version {
         DfxVersion::Latest => dfxvm::update().await?,
         DfxVersion::Specific(version) => dfxvm::set_default(version, locations).await?,
     }
