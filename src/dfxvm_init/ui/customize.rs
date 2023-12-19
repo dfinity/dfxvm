@@ -1,6 +1,7 @@
 use crate::dfxvm_init::plan::{DfxVersion, Plan};
 use crate::error::dfxvm_init::InteractError;
 use crate::log::log_error;
+use dialoguer::Confirm;
 use semver::Version;
 
 pub fn customize(plan: Plan) -> Result<Plan, InteractError> {
@@ -12,6 +13,9 @@ pub fn customize(plan: Plan) -> Result<Plan, InteractError> {
 
     let dfx_version = select_dfx_version(&options.dfx_version)?;
     options = options.with_dfx_version(dfx_version);
+
+    let modify_path = select_modify_path(options.modify_path)?;
+    options = options.with_modify_path(modify_path);
 
     println!();
 
@@ -43,4 +47,12 @@ fn select_dfx_version(install_dfx: &DfxVersion) -> Result<DfxVersion, InteractEr
         }
     };
     Ok(dfx_version)
+}
+
+fn select_modify_path(current: bool) -> Result<bool, InteractError> {
+    let modify = Confirm::new()
+        .with_prompt("Modify PATH variable?")
+        .default(current)
+        .interact()?;
+    Ok(modify)
 }

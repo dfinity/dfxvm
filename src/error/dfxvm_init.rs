@@ -1,7 +1,7 @@
 use crate::error::{
     dfxvm,
     env::NoHomeDirectoryError,
-    fs::{CreateDirAllError, WriteFileError},
+    fs::{AppendToFileError, CreateDirAllError, ReadToStringError, WriteFileError},
     installation::InstallBinariesError,
 };
 use thiserror::Error;
@@ -33,6 +33,9 @@ pub enum ExecutePlanError {
     Update(#[from] dfxvm::UpdateError),
 
     #[error(transparent)]
+    UpdateProfileScripts(#[from] UpdateProfileScriptsError),
+
+    #[error(transparent)]
     WriteFile(#[from] WriteFileError),
 }
 
@@ -41,4 +44,13 @@ pub enum ExecutePlanError {
 pub struct InteractError {
     #[from]
     source: dialoguer::Error,
+}
+
+#[derive(Error, Debug)]
+pub enum UpdateProfileScriptsError {
+    #[error(transparent)]
+    AppendToFile(#[from] AppendToFileError),
+
+    #[error(transparent)]
+    ReadProfileScript(#[from] ReadToStringError),
 }

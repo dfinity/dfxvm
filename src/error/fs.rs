@@ -2,6 +2,18 @@ use std::path::PathBuf;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
+pub enum AppendToFileError {
+    #[error(transparent)]
+    Open(#[from] OpenFileError),
+
+    #[error(transparent)]
+    Write(#[from] WriteFileError),
+
+    #[error(transparent)]
+    Sync(#[from] SyncDataError),
+}
+
+#[derive(Error, Debug)]
 #[error("failed to canonicalize '{path}'")]
 pub struct CanonicalizePathError {
     pub path: PathBuf,
@@ -83,6 +95,13 @@ pub struct RenameError {
 #[derive(Error, Debug)]
 #[error("failed to set permissions for {path}")]
 pub struct SetPermissionsError {
+    pub path: PathBuf,
+    pub source: std::io::Error,
+}
+
+#[derive(Error, Debug)]
+#[error("failed to sync data for {path}")]
+pub struct SyncDataError {
     pub path: PathBuf,
     pub source: std::io::Error,
 }

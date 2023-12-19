@@ -6,6 +6,7 @@ use crate::common::{
     project_dirs, Settings,
 };
 use std::cell::Cell;
+use std::ffi::OsStr;
 use std::fs::create_dir_all;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -42,6 +43,10 @@ impl TempHomeDir {
         self.tempdir.path()
     }
 
+    pub fn join<P: AsRef<Path>>(&self, path: P) -> PathBuf {
+        self.path().join(path.as_ref())
+    }
+
     pub fn dfx(&self) -> Command {
         self.dfxvm_as_command_named("dfx")
     }
@@ -54,8 +59,8 @@ impl TempHomeDir {
         self.dfxvm_as_command_named("dfxvm-init")
     }
 
-    pub fn new_command(&self, program: &Path) -> Command {
-        let mut command = Command::new(program);
+    pub fn new_command<S: AsRef<OsStr>>(&self, program: S) -> Command {
+        let mut command = Command::new(program.as_ref());
 
         command.env_clear();
         command.env("PATH", "/usr/bin:/bin:/usr/sbin:/sbin");
@@ -78,7 +83,7 @@ impl TempHomeDir {
 
     pub fn dfxvm_as_command_named(&self, filename: &str) -> Command {
         let path = self.dfxvm_as_file_named(filename);
-        self.new_command(&path)
+        self.new_command(path)
     }
 
     pub fn config_dir(&self) -> PathBuf {

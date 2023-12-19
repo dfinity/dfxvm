@@ -1,9 +1,39 @@
 use crate::error::fs::{
-    CanonicalizePathError, CopyFileError, CreateDirAllError, CreateFileError, OpenFileError,
-    ReadFileError, ReadMetadataError, ReadToStringError, RemoveDirAllError, RemoveFileError,
-    RenameError, SetPermissionsError, WriteFileError,
+    AppendToFileError, CanonicalizePathError, CopyFileError, CreateDirAllError, CreateFileError,
+    OpenFileError, ReadFileError, ReadMetadataError, ReadToStringError, RemoveDirAllError,
+    RemoveFileError, RenameError, SetPermissionsError, SyncDataError, WriteFileError,
 };
+use std::io::Write;
 use std::path::{Path, PathBuf};
+
+// Derived from append_file() in https://github.com/rust-lang/rustup/blob/master/src/utils/raw.rs
+pub fn append_to_file(dest: &Path, line: &str) -> Result<(), AppendToFileError> {
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .append(true)
+        .create(true)
+        .open(dest)
+        .map_err(|source| {
+            AppendToFileError::Open(OpenFileError {
+                path: dest.to_path_buf(),
+                source,
+            })
+        })?;
+
+    writeln!(file, "{line}").map_err(|source| {
+        AppendToFileError::Write(WriteFileError {
+            path: dest.to_path_buf(),
+            source,
+        })
+    })?;
+
+    file.sync_data().map_err(|source| {
+        AppendToFileError::Sync(SyncDataError {
+            path: dest.to_path_buf(),
+            source,
+        })
+    })
+}
 
 pub fn canonicalize(path: &Path) -> Result<PathBuf, CanonicalizePathError> {
     path.canonicalize().map_err(|source| CanonicalizePathError {

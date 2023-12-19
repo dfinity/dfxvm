@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - ReleaseDate
 
+- dfxvm-init now alters profile scripts to modify the PATH environment variable.
+
 ## [0.1.1] - 2023-12-04
 
 - Added `dfx` mode, which selects a dfx version and dispatches execution to it.

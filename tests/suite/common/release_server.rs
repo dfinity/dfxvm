@@ -1,3 +1,4 @@
+use crate::common::file_contents::manifest_json;
 use crate::common::{ReleaseAsset, TempHomeDir};
 use httptest::http::response;
 use httptest::{matchers::request, responders::status_code, Expectation, Server};
@@ -43,6 +44,14 @@ impl ReleaseServer {
                     .unwrap(),
             ),
         );
+    }
+
+    pub fn expect_install_latest(&self) {
+        let tarball = ReleaseAsset::dfx_tarball("0.15.0", "echo 'this is dfx 0.15.0'");
+        let sha256 = ReleaseAsset::sha256(&tarball);
+        self.expect_get(&tarball);
+        self.expect_get(&sha256);
+        self.expect_get_manifest(&manifest_json("0.15.0"));
     }
 }
 
