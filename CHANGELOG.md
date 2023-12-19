@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - ReleaseDate
 
+## [0.1.2] - 2023-12-19
+
 - dfxvm-init now alters profile scripts to modify the PATH environment variable.
 
 ## [0.1.1] - 2023-12-04
@@ -24,5 +26,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - does not yet clean up previously-installed dfx versions.
 
 <!-- next-url -->
-[Unreleased]: https://github.com/dfinity/dfxvm/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/dfinity/dfxvm/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/dfinity/dfxvm/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/dfinity/dfxvm/compare/828e4ed...v0.1.1
