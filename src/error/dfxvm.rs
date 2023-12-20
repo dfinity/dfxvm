@@ -1,19 +1,17 @@
 use crate::error::{
     env::NoHomeDirectoryError,
     fs::{RemoveDirAllError, RemoveFileError, RenameError},
-    json::LoadJsonFileError,
+    json::{FetchJsonDocError, LoadJsonFileError},
 };
 use std::path::PathBuf;
 use thiserror::Error;
 
 pub mod default;
 pub mod install;
-pub mod update;
 
 pub use default::DefaultError;
 pub use default::SetDefaultError;
 pub use install::InstallError;
-pub use update::UpdateError;
 
 #[derive(Error, Debug)]
 pub enum Error {
@@ -67,6 +65,24 @@ pub enum UninstallError {
 
     #[error(transparent)]
     Rename(#[from] RenameError),
+}
+
+#[derive(Error, Debug)]
+pub enum UpdateError {
+    #[error("failed to fetch latest tag")]
+    FetchLatestTag(#[from] FetchJsonDocError),
+
+    #[error(transparent)]
+    LoadSettings(#[from] LoadJsonFileError),
+
+    #[error(transparent)]
+    NoHomeDirectory(#[from] NoHomeDirectoryError),
+
+    #[error("failed to parse manifest url")]
+    ParseManifestUrl(#[from] url::ParseError),
+
+    #[error(transparent)]
+    SetDefault(#[from] SetDefaultError),
 }
 
 #[derive(Error, Debug)]

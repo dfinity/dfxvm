@@ -1,4 +1,8 @@
-use crate::error::fs::{ReadFileError, WriteFileError};
+use crate::error::{
+    fs::{ReadFileError, WriteFileError},
+    reqwest::WrappedReqwestError,
+    Retryable,
+};
 use std::path::PathBuf;
 use thiserror::Error;
 
@@ -24,4 +28,29 @@ pub enum SaveJsonFileError {
 
     #[error(transparent)]
     Write(#[from] WriteFileError),
+}
+
+#[derive(Error, Debug)]
+pub enum FetchJsonDocError {
+    #[error(transparent)]
+    Get(WrappedReqwestError),
+
+    #[error(transparent)]
+    Status(WrappedReqwestError),
+
+    #[error(transparent)]
+    ReadBytes(WrappedReqwestError),
+
+    #[error("failed to parse json document")]
+    Parse(serde_json::Error),
+}
+
+impl Retryable for FetchJsonDocError {
+    fn is_retryable(&self) -> bool {
+        match self {
+            FetchJsonDocError::Get(e) => e.is_retryable(),
+            FetchJsonDocError::ReadBytes(_) => true,
+            _ => false,
+        }
+    }
 }
