@@ -85,7 +85,7 @@ pub async fn main(args: &[OsString]) -> Result<ExitCode, dfxvm::Error> {
         Command::Install(opts) => install(opts.version).await?,
         Command::List(_opts) => list()?,
         Command::SelfCommand(opts) => match opts.command {
-            SelfCommand::Update(_opts) => self_update()?,
+            SelfCommand::Update(_opts) => self_update().await?,
             SelfCommand::Uninstall(_opts) => self_uninstall()?,
         },
         Command::Uninstall(opts) => uninstall(opts.version)?,

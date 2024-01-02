@@ -66,6 +66,7 @@ async fn attempt_fetch_manifest<T: for<'a> serde::de::Deserialize<'a>>(
         .bytes()
         .await
         .map_err(|e| ReadBytes(WrappedReqwestError(e)))?;
+    println!("bytes: {:?}", bytes);
     let manifest = serde_json::from_slice(&bytes).map_err(Parse)?;
     Ok(manifest)
 }

@@ -43,8 +43,25 @@ impl ReleaseAsset {
             .unwrap()
     }
 
-    fn dfx_tarball_filename(version: &str) -> String {
+    pub fn dfx_tarball_filename(version: &str) -> String {
         let platform = target::platform();
         format!("dfx-{version}-x86_64-{platform}.tar.gz")
     }
+
+    pub fn altered_dfxvm_tarball(version: &str) -> ReleaseAsset {
+        let mut altered_dfxvm = std::fs::read(crate::common::dfxvm_path()).unwrap();
+        altered_dfxvm.push(0);
+        altered_dfxvm.push(0);
+
+        let filename = ReleaseAsset::dfx_tarball_filename(version);
+        let version = Version::parse(version).unwrap();
+        let contents = file_contents::binary_tar_gz("dfx", &altered_dfxvm);
+        ReleaseAsset {
+            version,
+            filename,
+            contents,
+        }
+    }
+
+
 }

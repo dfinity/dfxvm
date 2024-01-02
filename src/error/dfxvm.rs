@@ -90,4 +90,10 @@ pub enum UpdateError {
 pub enum SelfUninstallError {}
 
 #[derive(Error, Debug)]
-pub enum SelfUpdateError {}
+pub enum SelfUpdateError {
+    #[error("failed to create a temporary directory in {path}")]
+    CreateTempDirIn {
+        path: PathBuf,
+        source: std::io::Error,
+    },
+}

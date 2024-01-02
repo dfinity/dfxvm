@@ -72,17 +72,28 @@ impl TempHomeDir {
         command
     }
 
-    pub fn dfxvm_as_file_named(&self, filename: &str) -> PathBuf {
-        let path = self.path().join(filename);
+    pub fn copy_dfxvm_to_path(&self, path: &Path) {
         if !path.exists() {
             std::fs::copy(dfxvm_path(), &path).unwrap();
             wait_until_file_is_not_busy(&path);
         }
+    }
+
+    pub fn dfxvm_as_file_named(&self, filename: &str) -> PathBuf {
+        let path = self.path().join(filename);
+        self.copy_dfxvm_to_path(&path);
         path
     }
 
     pub fn dfxvm_as_command_named(&self, filename: &str) -> Command {
         let path = self.dfxvm_as_file_named(filename);
+        self.new_command(path)
+    }
+
+    pub fn installed_dfxvm(&self) -> Command {
+        let path = self.installed_dfxvm_path();
+        create_dir_all(path.parent().unwrap()).unwrap();
+        self.copy_dfxvm_to_path(&path);
         self.new_command(path)
     }
 
