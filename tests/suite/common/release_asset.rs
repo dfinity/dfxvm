@@ -6,9 +6,10 @@ use crate::common::{
 use httptest::http::{response, Response};
 use semver::Version;
 
+#[derive(Clone)]
 pub struct ReleaseAsset {
-    pub version: Version,
     pub filename: String,
+    pub url_path: String,
     pub contents: Vec<u8>,
 }
 
@@ -16,9 +17,13 @@ impl ReleaseAsset {
     pub fn dfx_tarball(version: &str, snippet: &str) -> ReleaseAsset {
         let filename = Self::dfx_tarball_filename(version);
         let version = Version::parse(version).unwrap();
+
+        // must match the download_url_template in ReleaseServer::new
+        let url_path = format!("/any/arbitrary/path/{version}/{filename}");
+
         let contents = dfx_tar_gz(&bash_script(snippet));
         ReleaseAsset {
-            version,
+            url_path,
             filename,
             contents,
         }
@@ -26,11 +31,12 @@ impl ReleaseAsset {
 
     pub fn sha256(asset: &ReleaseAsset) -> ReleaseAsset {
         let filename = format!("{}.sha256", asset.filename);
+        let url_path = format!("{}.sha256", asset.url_path);
         let contents = file_contents::sha256(&asset.filename, &asset.contents)
             .as_bytes()
             .to_vec();
         ReleaseAsset {
-            version: asset.version.clone(),
+            url_path,
             filename,
             contents,
         }
@@ -43,8 +49,44 @@ impl ReleaseAsset {
             .unwrap()
     }
 
-    fn dfx_tarball_filename(version: &str) -> String {
+    pub fn dfx_tarball_filename(version: &str) -> String {
         let platform = target::platform();
         format!("dfx-{version}-x86_64-{platform}.tar.gz")
+    }
+
+    pub fn dfxvm_tarball_basename() -> String {
+        #[cfg(target_arch = "aarch64")]
+        let arch_and_os = "aarch64-apple-darwin";
+        #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
+        let arch_and_os = "x86_64-apple-darwin";
+        #[cfg(target_os = "linux")]
+        let arch_and_os = "x86_64-unknown-linux-gnu";
+
+        format!("dfxvm-{}", arch_and_os)
+    }
+
+    // tricky about testing this:
+    // - we need to test that the dfxvm binary is updated
+    // - we only have the current dfxvm binary to test with
+    // - so we copy the binary and append a couple bytes to it.
+    pub fn altered_dfxvm_binary() -> Vec<u8> {
+        let mut altered_dfxvm = std::fs::read(crate::common::dfxvm_path()).unwrap();
+        altered_dfxvm.push(0xCC);
+        altered_dfxvm.push(0xCC);
+        altered_dfxvm
+    }
+
+    pub fn altered_dfxvm_tarball() -> ReleaseAsset {
+        let altered_dfxvm = Self::altered_dfxvm_binary();
+
+        let basename = Self::dfxvm_tarball_basename();
+        let filename = format!("{basename}.tar.gz");
+        let url_path = format!("/dfxvm-latest-download-root/{filename}");
+        let contents = file_contents::dfxvm_tarball(&altered_dfxvm);
+        ReleaseAsset {
+            url_path,
+            filename,
+            contents,
+        }
     }
 }

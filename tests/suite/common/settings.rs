@@ -38,6 +38,10 @@ impl Settings {
         self.set_field("manifest_url", url_template);
     }
 
+    pub fn write_dfxvm_latest_download_root_url(&self, url_template: &str) {
+        self.set_field("dfxvm_latest_download_root", url_template);
+    }
+
     pub fn write(&self, s: &str) {
         create_dir_all(self.path.parent().unwrap()).unwrap();
         std::fs::write(&self.path, s).unwrap();
