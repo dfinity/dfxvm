@@ -5,6 +5,7 @@ use crate::common::{
     file_contents::bash_script,
     project_dirs, Settings,
 };
+use itertools::Itertools;
 use std::cell::Cell;
 use std::ffi::OsStr;
 use std::fs::create_dir_all;
@@ -72,18 +73,40 @@ impl TempHomeDir {
         command
     }
 
+    pub fn copy_dfxvm_to_path(&self, path: &Path) {
+        if !path.exists() {
+            std::fs::copy(dfxvm_path(), path).unwrap();
+            wait_until_file_is_not_busy(path);
+        }
+    }
+
     pub fn dfxvm_as_file_named(&self, filename: &str) -> PathBuf {
         let path = self.path().join(filename);
-        if !path.exists() {
-            std::fs::copy(dfxvm_path(), &path).unwrap();
-            wait_until_file_is_not_busy(&path);
-        }
+        self.copy_dfxvm_to_path(&path);
         path
     }
 
     pub fn dfxvm_as_command_named(&self, filename: &str) -> Command {
         let path = self.dfxvm_as_file_named(filename);
         self.new_command(path)
+    }
+
+    pub fn installed_dfxvm(&self) -> Command {
+        self.new_command(self.install_dfxvm_bin())
+    }
+
+    pub fn install_dfxvm_bin(&self) -> PathBuf {
+        let path = self.installed_dfxvm_path();
+        create_dir_all(path.parent().unwrap()).unwrap();
+        self.copy_dfxvm_to_path(&path);
+        path
+    }
+
+    pub fn install_dfxvm_bin_as_dfx_proxy(&self) -> PathBuf {
+        let path = self.installed_dfx_proxy_path();
+        create_dir_all(path.parent().unwrap()).unwrap();
+        self.copy_dfxvm_to_path(&path);
+        path
     }
 
     pub fn config_dir(&self) -> PathBuf {
@@ -107,6 +130,16 @@ impl TempHomeDir {
             .read_dir()
             .unwrap()
             .map(|entry| entry.unwrap().file_name().into_string().unwrap())
+            .collect()
+    }
+
+    pub fn installed_binaries(&self) -> Vec<String> {
+        self.data_local_dir()
+            .join("bin")
+            .read_dir()
+            .unwrap()
+            .map(|entry| entry.unwrap().file_name().into_string().unwrap())
+            .sorted()
             .collect()
     }
 

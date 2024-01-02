@@ -1,3 +1,4 @@
+use crate::dfxvm::cleanup_self_updater;
 use crate::error::dfx;
 use crate::error::dfx::Error::Exec;
 use crate::error::dfx::{
@@ -18,6 +19,7 @@ use std::path::PathBuf;
 use std::process::ExitCode;
 
 pub fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, dfx::Error> {
+    cleanup_self_updater(locations)?;
     let Some((version, args)) = get_dfx_version_and_command_args(args, locations)? else {
         err!("Unable to determine which dfx version to call. To set a default version, run:");
         err!("    {}", style_command("dfxvm default <version>"));

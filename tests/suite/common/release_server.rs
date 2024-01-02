@@ -18,19 +18,22 @@ impl ReleaseServer {
             .write_download_url_template(&download_url_template);
         let manifest_url = server.url_str("/manifest.json");
         home_dir.settings().write_manifest_url(&manifest_url);
+        home_dir
+            .settings()
+            .write_dfxvm_latest_download_root_url(&server.url_str("/dfxvm-latest-download-root"));
         Self { server }
     }
 
     pub fn expect_get(&self, asset: &ReleaseAsset) {
         self.server.expect(
-            Expectation::matching(request::method_path("GET", url_path(asset)))
+            Expectation::matching(request::method_path("GET", asset.url_path.clone()))
                 .respond_with(asset.ok_response()),
         );
     }
 
     pub fn expect_get_respond_not_found(&self, asset: &ReleaseAsset) {
         self.server.expect(
-            Expectation::matching(request::method_path("GET", url_path(asset)))
+            Expectation::matching(request::method_path("GET", asset.url_path.clone()))
                 .respond_with(status_code(404)),
         );
     }
@@ -53,10 +56,19 @@ impl ReleaseServer {
         self.expect_get(&sha256);
         self.expect_get_manifest(&manifest_json("0.15.0"));
     }
-}
 
-fn url_path(asset: &ReleaseAsset) -> String {
-    let version = &asset.version;
-    let filename = &asset.filename;
-    format!("/any/arbitrary/path/{version}/{filename}")
+    pub fn expect_get_dist_manifest(&self, contents: &str) {
+        self.server.expect(
+            Expectation::matching(request::method_path(
+                "GET",
+                "/dfxvm-latest-download-root/dist-manifest.json",
+            ))
+            .respond_with(
+                response::Builder::new()
+                    .status(200)
+                    .body(contents.as_bytes().to_vec())
+                    .unwrap(),
+            ),
+        );
+    }
 }

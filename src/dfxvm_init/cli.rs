@@ -1,3 +1,4 @@
+use crate::dfxvm::self_replace;
 use crate::dfxvm_init::initialize::initialize;
 use crate::dfxvm_init::plan::{
     DfxVersion::{Latest, Specific},
@@ -29,6 +30,12 @@ pub struct Cli {
 }
 
 pub async fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, dfxvm_init::Error> {
+    let arg1 = args.get(1).map(|a| &**a);
+    if arg1 == Some("--self-replace".as_ref()) {
+        self_replace().unwrap();
+        return Ok(ExitCode::SUCCESS);
+    }
+
     let opts = Cli::parse_from(args);
 
     let confirmation = if opts.proceed {
