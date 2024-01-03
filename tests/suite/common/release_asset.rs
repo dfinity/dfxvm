@@ -7,8 +7,8 @@ use httptest::http::{response, Response};
 use semver::Version;
 
 pub struct ReleaseAsset {
-    pub version: Version,
     pub filename: String,
+    pub url_path: String,
     pub contents: Vec<u8>,
 }
 
@@ -16,9 +16,13 @@ impl ReleaseAsset {
     pub fn dfx_tarball(version: &str, snippet: &str) -> ReleaseAsset {
         let filename = Self::dfx_tarball_filename(version);
         let version = Version::parse(version).unwrap();
+
+        // must match the download_url_template in ReleaseServer::new
+        let url_path = format!("/any/arbitrary/path/{version}/{filename}");
+
         let contents = dfx_tar_gz(&bash_script(snippet));
         ReleaseAsset {
-            version,
+            url_path,
             filename,
             contents,
         }
@@ -26,11 +30,12 @@ impl ReleaseAsset {
 
     pub fn sha256(asset: &ReleaseAsset) -> ReleaseAsset {
         let filename = format!("{}.sha256", asset.filename);
+        let url_path = format!("{}.sha256", asset.url_path);
         let contents = file_contents::sha256(&asset.filename, &asset.contents)
             .as_bytes()
             .to_vec();
         ReleaseAsset {
-            version: asset.version.clone(),
+            url_path,
             filename,
             contents,
         }
@@ -48,16 +53,34 @@ impl ReleaseAsset {
         format!("dfx-{version}-x86_64-{platform}.tar.gz")
     }
 
-    pub fn altered_dfxvm_tarball(version: &str) -> ReleaseAsset {
+    pub fn dfxvm_tarball_basename() -> String {
+        #[cfg(target_arch = "aarch64")]
+            let arch_and_os = "aarch64-apple-darwin";
+        #[cfg(all(target_os="macos", target_arch = "x86_64"))]
+            let arch_and_os = "x86_64-apple-darwin";
+        #[cfg(target_os = "linux")]
+            let arch_and_os = "x86_64-unknown-linux-gnu";
+
+        format!("dfxvm-{}", arch_and_os)
+    }
+
+    pub fn altered_dfxvm_binary() -> Vec<u8> {
         let mut altered_dfxvm = std::fs::read(crate::common::dfxvm_path()).unwrap();
         altered_dfxvm.push(0);
         altered_dfxvm.push(0);
+        altered_dfxvm
+    }
 
-        let filename = ReleaseAsset::dfx_tarball_filename(version);
+    pub fn altered_dfxvm_tarball(version: &str) -> ReleaseAsset {
+        let altered_dfxvm = Self::altered_dfxvm_binary();
+
+        let basename = Self::dfxvm_tarball_basename();
+        let filename = format!("{basename}.tar.gz");
+        let url_path = format!("/dfxvm-latest-download-root/{filename}");
         let version = Version::parse(version).unwrap();
-        let contents = file_contents::binary_tar_gz("dfx", &altered_dfxvm);
+        let contents = file_contents::dfxvm_tarball(&altered_dfxvm);
         ReleaseAsset {
-            version,
+            url_path,
             filename,
             contents,
         }

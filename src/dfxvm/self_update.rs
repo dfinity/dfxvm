@@ -1,3 +1,5 @@
+use std::os::unix::prelude::CommandExt;
+use flate2::read::GzDecoder;
 use serde::Deserialize;
 use crate::error::dfxvm::SelfUpdateError;
 use crate::json::fetch_json_doc;
@@ -5,9 +7,13 @@ use crate::locations::Locations;
 use crate::settings::Settings;
 use reqwest::{Client, Url};
 use semver::Version;
-use crate::download::download_file;
+use tar::Archive;
+use crate::download::{download_file, verify_checksum};
+use crate::error::dfx::Error::Exec;
 use crate::error::dfxvm::InstallError::CreateTempDir;
 use crate::error::dfxvm::SelfUpdateError::CreateTempDirIn;
+use crate::fs::open_file;
+use crate::installation::install_binaries;
 
 pub async fn self_update() -> Result<(), SelfUpdateError> {
     println!("update dfxvm to latest");
@@ -40,15 +46,45 @@ pub async fn self_update() -> Result<(), SelfUpdateError> {
     let client = Client::new();
 
     download_file(&client, &shasum_url, &downloaded_shasum_path).await.unwrap();
-    let hash = download_file(&client, &tarball_url, &downloaded_tarball_path).await.unwrap();
+    let computed_hash = download_file(&client, &tarball_url, &downloaded_tarball_path).await.unwrap();
+    verify_checksum(computed_hash, &downloaded_shasum_path).unwrap();
 
+    let tar_gz = open_file(&downloaded_tarball_path).unwrap();
+    let tar = GzDecoder::new(tar_gz);
+    let mut ar = Archive::new(tar);
 
-    // download shasum
+    let dfxvm_init_path = locations.data_local_dir().join("bin").join("dfxvm-init-2");
+    for (i, file) in ar.entries().unwrap().enumerate() {
+        let mut file = file.unwrap();
+        info!("file-{}: {:?}", i, file.header().path().unwrap());
+        if file.header().path().unwrap().to_str().unwrap().ends_with("dfxvm") {
+            info!("found dfxvm, copying to {}", dfxvm_init_path.display());
+            file.unpack(&dfxvm_init_path).unwrap();
+            break;
+        }
+    }
 
-    // verify shasum
+    download_dir.close().unwrap();
+
+    info!("calling self-replace");
+    let mut command = std::process::Command::new(dfxvm_init_path);
+    command.arg("--self-replace");
+    let _err = command.exec();
+/*    Err(Exec {
+        command,
+        source: err,
+    })
+*/
 
 
     Ok(())
+}
+
+pub fn self_replace() {
+    info!("in self_replace");
+    let locations = Locations::new().unwrap();
+
+    install_binaries(&locations.data_local_dir().join("bin")).unwrap();
 }
 
 #[derive(Deserialize, Debug)]

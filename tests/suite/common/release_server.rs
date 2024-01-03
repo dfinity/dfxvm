@@ -24,14 +24,14 @@ impl ReleaseServer {
 
     pub fn expect_get(&self, asset: &ReleaseAsset) {
         self.server.expect(
-            Expectation::matching(request::method_path("GET", url_path(asset)))
+            Expectation::matching(request::method_path("GET", asset.url_path.clone()))
                 .respond_with(asset.ok_response()),
         );
     }
 
     pub fn expect_get_respond_not_found(&self, asset: &ReleaseAsset) {
         self.server.expect(
-            Expectation::matching(request::method_path("GET", url_path(asset)))
+            Expectation::matching(request::method_path("GET", asset.url_path.clone()))
                 .respond_with(status_code(404)),
         );
     }
@@ -65,10 +65,4 @@ impl ReleaseServer {
             ),
         );
     }
-}
-
-fn url_path(asset: &ReleaseAsset) -> String {
-    let version = &asset.version;
-    let filename = &asset.filename;
-    format!("/any/arbitrary/path/{version}/{filename}")
 }

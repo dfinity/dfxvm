@@ -91,10 +91,14 @@ impl TempHomeDir {
     }
 
     pub fn installed_dfxvm(&self) -> Command {
+        self.new_command(self.install_dfxvm_bin())
+    }
+
+    pub fn install_dfxvm_bin(&self) -> PathBuf {
         let path = self.installed_dfxvm_path();
         create_dir_all(path.parent().unwrap()).unwrap();
         self.copy_dfxvm_to_path(&path);
-        self.new_command(path)
+        path
     }
 
     pub fn config_dir(&self) -> PathBuf {

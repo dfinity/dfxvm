@@ -4,6 +4,7 @@ use serde_json::json;
 use sha2::{Digest, Sha256};
 use std::io::Write;
 use tar::Builder;
+use crate::common::ReleaseAsset;
 
 pub fn dfx_tar_gz(script: &str) -> Vec<u8> {
     binary_tar_gz("dfx", script.as_bytes())
@@ -84,27 +85,17 @@ pub fn dist_manifest_json(latest: &str) -> String {
 // -rw-r--r--  0 501    20      11357 Dec 19 11:21 dfxvm-aarch64-apple-darwin/LICENSE
 // -rwxr-xr-x  0 501    20    5747075 Dec 19 11:24 dfxvm-aarch64-apple-darwin/dfxvm
 
-pub fn dfxvm_tarball(version: &str, contents: &[u8]) -> Vec<u8> {
-    // ##    aarch64-apple-darwin
-    // ##    x86_64-apple-darwin
-    // ##    x86_64-unknown-linux-gnu
-    // directory within the tarball will be one of the above, depending on arch.
-    #[cfg(target_arch = "aarch64")]
-    let arch = "aarch64-apple-darwin";
-    #[cfg(all(target_os="macos", target_arch = "x86_64"))]
-    let arch = "x86_64-apple-darwin";
-    #[cfg(target_os = "linux")]
-    let arch = "x86_64-unknown-linux-gnu";
+pub fn dfxvm_tarball(contents: &[u8]) -> Vec<u8> {
 
-    let basename = format!("dfxvm-{}.tar.g", arch);
+    let dirname = ReleaseAsset::dfxvm_tarball_basename();
 
     let tar_buffer = Vec::new();
     let mut tar = Builder::new(Vec::new());
 
-    append_file(&mut tar, 0o644, arch, "README.md", b"the readme\n");
-    append_file(&mut tar, 0o644, arch, "CHANGELOG.md", b"the changelog\n");
-    append_file(&mut tar, 0o644, arch, "LICENSE", b"the license\n");
-    append_file(&mut tar, 0o755, arch, "dfxvm", contents);
+    append_file(&mut tar, 0o644, &dirname, "README.md", b"the readme\n");
+    append_file(&mut tar, 0o644, &dirname, "CHANGELOG.md", b"the changelog\n");
+    append_file(&mut tar, 0o644, &dirname, "LICENSE", b"the license\n");
+    append_file(&mut tar, 0o755, &dirname, "dfxvm", contents);
 
     let mut gzipped = GzEncoder::new(tar_buffer, Compression::default());
     gzipped.write_all(&tar.into_inner().unwrap()).unwrap();
@@ -112,8 +103,8 @@ pub fn dfxvm_tarball(version: &str, contents: &[u8]) -> Vec<u8> {
     gzipped.finish().unwrap()
 }
 
-fn append_file(tar: &mut Builder<Vec<u8>>, mode: u32, arch: &str, filename: &str, contents: &[u8]) {
-    let path = format!("dfxvm-{}/{}", arch, filename);
+fn append_file(tar: &mut Builder<Vec<u8>>, mode: u32, dirname: &str, filename: &str, contents: &[u8]) {
+    let path = format!("{}/{}", dirname, filename);
     let mut file_header = tar::Header::new_gnu();
     file_header.set_mode(mode);
     file_header.set_size(contents.len() as u64);

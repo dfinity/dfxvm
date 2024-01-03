@@ -9,6 +9,7 @@ use clap::Parser;
 use semver::Version;
 use std::ffi::OsString;
 use std::process::ExitCode;
+use crate::dfxvm::self_replace;
 
 /// The installer for dfxvm
 #[derive(Parser)]
@@ -28,6 +29,12 @@ pub struct Cli {
 }
 
 pub async fn main(args: &[OsString]) -> Result<ExitCode, dfxvm_init::Error> {
+    let arg1 = args.get(1).map(|a| &**a);
+    if arg1 == Some("--self-replace".as_ref()) {
+        self_replace();
+        return Ok(ExitCode::SUCCESS);
+    }
+
     let opts = Cli::parse_from(args);
 
     let confirmation = if opts.proceed {
