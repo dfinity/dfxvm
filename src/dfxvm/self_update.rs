@@ -3,8 +3,9 @@ use crate::error::dfxvm::SelfUpdateError;
 use crate::json::fetch_json_doc;
 use crate::locations::Locations;
 use crate::settings::Settings;
-use reqwest::Url;
+use reqwest::{Client, Url};
 use semver::Version;
+use crate::download::download_file;
 use crate::error::dfxvm::InstallError::CreateTempDir;
 use crate::error::dfxvm::SelfUpdateError::CreateTempDirIn;
 
@@ -25,13 +26,21 @@ pub async fn self_update() -> Result<(), SelfUpdateError> {
     // download tarball
     let tarball_url = format_tarball_url(&settings);
     info!("url is {tarball_url}");
-    let shasum_url = format!("{tarball_url}.sha256");
+    let shasum_url = Url::parse(&format!("{tarball_url}.sha256")).unwrap();
     info!("shasum_url is {shasum_url}");
 
     let download_dir = tempfile::Builder::new()
         .prefix("dfxvm-download")
         .tempdir_in(locations.data_local_dir())
         .map_err(|source|CreateTempDirIn { path: locations.data_local_dir().to_path_buf(), source })?;
+
+    let downloaded_tarball_path = download_dir.path().join("dfxvm.tar.gz");
+    let downloaded_shasum_path = download_dir.path().join("dfxvm.tar.gz.sha256");
+
+    let client = Client::new();
+
+    download_file(&client, &shasum_url, &downloaded_shasum_path).await.unwrap();
+    let hash = download_file(&client, &tarball_url, &downloaded_tarball_path).await.unwrap();
 
 
     // download shasum

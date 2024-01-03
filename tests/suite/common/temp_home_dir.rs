@@ -74,8 +74,8 @@ impl TempHomeDir {
 
     pub fn copy_dfxvm_to_path(&self, path: &Path) {
         if !path.exists() {
-            std::fs::copy(dfxvm_path(), &path).unwrap();
-            wait_until_file_is_not_busy(&path);
+            std::fs::copy(dfxvm_path(), path).unwrap();
+            wait_until_file_is_not_busy(path);
         }
     }
 
