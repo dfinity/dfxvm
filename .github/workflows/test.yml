@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - ens/self-update
   pull_request:
 
 jobs:
