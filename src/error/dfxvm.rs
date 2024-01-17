@@ -1,5 +1,4 @@
 use crate::error::{
-    env::NoHomeDirectoryError,
     fs::{RemoveDirAllError, RemoveFileError, RenameError},
     json::{FetchJsonDocError, LoadJsonFileError},
 };
@@ -42,9 +41,6 @@ pub enum ListError {
     #[error(transparent)]
     LoadJsonFile(#[from] LoadJsonFileError),
 
-    #[error(transparent)]
-    NoHomeDirectory(#[from] NoHomeDirectoryError),
-
     #[error("failed to read directory {path}")]
     ReadDir {
         path: PathBuf,
@@ -54,9 +50,6 @@ pub enum ListError {
 
 #[derive(Error, Debug)]
 pub enum UninstallError {
-    #[error(transparent)]
-    NoHomeDirectory(#[from] NoHomeDirectoryError),
-
     #[error(transparent)]
     RemoveDirAll(#[from] RemoveDirAllError),
 
@@ -74,9 +67,6 @@ pub enum UpdateError {
 
     #[error(transparent)]
     LoadSettings(#[from] LoadJsonFileError),
-
-    #[error(transparent)]
-    NoHomeDirectory(#[from] NoHomeDirectoryError),
 
     #[error("failed to parse manifest url")]
     ParseManifestUrl(#[from] url::ParseError),

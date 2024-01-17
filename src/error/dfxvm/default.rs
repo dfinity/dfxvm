@@ -1,6 +1,5 @@
 use crate::error::{
     dfxvm::install::InstallError,
-    env::NoHomeDirectoryError,
     fs::CreateDirAllError,
     json::{LoadJsonFileError, SaveJsonFileError},
 };
@@ -10,9 +9,6 @@ use thiserror::Error;
 pub enum DefaultError {
     #[error(transparent)]
     Display(#[from] DisplayDefaultError),
-
-    #[error(transparent)]
-    NoHomeDirectory(#[from] NoHomeDirectoryError),
 
     #[error(transparent)]
     Set(#[from] SetDefaultError),

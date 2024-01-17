@@ -1,5 +1,6 @@
 use crate::error::cli::DetermineModeError::{NoExeName, UnrecognizedExeName};
 use crate::error::cli::{DetermineModeError, DispatchError};
+use crate::locations::Locations;
 use crate::log::log_error;
 use crate::{dfx, dfxvm, dfxvm_init};
 use std::ffi::OsString;
@@ -15,10 +16,11 @@ pub async fn main(args: &[OsString]) -> ExitCode {
 }
 
 pub async fn dispatch(args: &[OsString]) -> Result<ExitCode, DispatchError> {
+    let locations = Locations::new()?;
     let exit_code = match determine_mode(args)? {
-        Init => dfxvm_init::main(args).await?,
-        Manage => dfxvm::main(args).await?,
-        Proxy => dfx::main(args)?,
+        Init => dfxvm_init::main(args, &locations).await?,
+        Manage => dfxvm::main(args, &locations).await?,
+        Proxy => dfx::main(args, &locations)?,
     };
     Ok(exit_code)
 }

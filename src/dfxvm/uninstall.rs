@@ -4,10 +4,9 @@ use crate::fs::{remove_dir_all, remove_file, rename};
 use crate::locations::Locations;
 use semver::Version;
 
-pub fn uninstall(version: Version) -> Result<(), UninstallError> {
-    let locations = Locations::new()?;
+pub fn uninstall(version: Version, locations: &Locations) -> Result<(), UninstallError> {
     let version_dir = locations.version_dir(&version);
-    if !installed(&version, &locations) {
+    if !installed(&version, locations) {
         info!("dfx {} is not installed", version);
         return Ok(());
     }

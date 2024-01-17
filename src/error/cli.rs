@@ -1,5 +1,4 @@
-use crate::error::dfxvm;
-use crate::error::{dfx, dfxvm_init};
+use crate::error::{dfx, dfxvm, dfxvm_init, env::NoHomeDirectoryError};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -12,6 +11,9 @@ pub enum DispatchError {
 
     #[error(transparent)]
     Manage(#[from] dfxvm::Error),
+
+    #[error(transparent)]
+    NoHomeDirectory(#[from] NoHomeDirectoryError),
 
     #[error(transparent)]
     Proxy(#[from] dfx::Error),

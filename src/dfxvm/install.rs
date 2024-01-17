@@ -26,11 +26,10 @@ pub fn installed(version: &Version, locations: &Locations) -> bool {
     locations.version_dir(version).exists()
 }
 
-pub async fn install(version: Version) -> Result<(), InstallError> {
-    let locations = Locations::new()?;
+pub async fn install(version: Version, locations: &Locations) -> Result<(), InstallError> {
     let settings = Settings::load_or_default(&locations.settings_path())?;
     let version_dir = locations.version_dir(&version);
-    if installed(&version, &locations) {
+    if installed(&version, locations) {
         info!("dfx {version} is already installed");
         return Ok(());
     }

@@ -1,6 +1,5 @@
 use crate::error::{
     download::DownloadVerifiedTarballError,
-    env::NoHomeDirectoryError,
     fs::{CreateDirAllError, OpenFileError, RenameError},
     json::LoadJsonFileError,
 };
@@ -32,9 +31,6 @@ pub enum InstallError {
 
     #[error(transparent)]
     LoadSettings(#[from] LoadJsonFileError),
-
-    #[error(transparent)]
-    NoHomeDirectory(#[from] NoHomeDirectoryError),
 }
 
 #[derive(Error, Debug)]

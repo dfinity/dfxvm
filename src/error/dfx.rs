@@ -1,6 +1,4 @@
-use crate::error::env::{GetCurrentDirError, NoHomeDirectoryError};
-use crate::error::fs::CanonicalizePathError;
-use crate::error::json::LoadJsonFileError;
+use crate::error::{env::GetCurrentDirError, fs::CanonicalizePathError, json::LoadJsonFileError};
 use std::process::Command;
 use thiserror::Error;
 
@@ -14,9 +12,6 @@ pub enum Error {
         command: Command,
         source: std::io::Error,
     },
-
-    #[error(transparent)]
-    NoHomeDirectory(#[from] NoHomeDirectoryError),
 }
 
 #[derive(Error, Debug)]
