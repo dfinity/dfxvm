@@ -48,13 +48,12 @@ pub async fn self_update(locations: &Locations) -> Result<(), SelfUpdateError> {
     })
 }
 
-pub fn self_replace() -> Result<(), SelfReplaceError> {
-    let locations = Locations::new()?;
-
-    install_binaries(&locations.data_local_dir().join("bin"))?;
+pub fn self_replace(locations: &Locations) -> Result<(), SelfReplaceError> {
+    install_binaries(&locations.bin_dir())?;
     Ok(())
 }
 
+// called on next execution of dfx or dfxvm
 pub fn cleanup_self_updater(locations: &Locations) -> Result<(), CleanupSelfUpdaterError> {
     let path = locations.self_update_path();
 
@@ -67,13 +66,13 @@ pub fn cleanup_self_updater(locations: &Locations) -> Result<(), CleanupSelfUpda
 
 fn format_tarball_url(settings: &Settings) -> Result<Url, FormatTarballUrlError> {
     #[cfg(target_arch = "aarch64")]
-    let arch = "aarch64-apple-darwin";
+        let architecture = "aarch64-apple-darwin";
     #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
-    let arch = "x86_64-apple-darwin";
+        let architecture = "x86_64-apple-darwin";
     #[cfg(target_os = "linux")]
-    let arch = "x86_64-unknown-linux-gnu";
+        let architecture = "x86_64-unknown-linux-gnu";
 
-    let basename = format!("dfxvm-{}", arch);
+    let basename = format!("dfxvm-{}", architecture);
     let url = format!(
         "{}/{basename}.tar.gz",
         settings.dfxvm_latest_download_root()
@@ -116,9 +115,8 @@ fn extract_binary(
 ) -> Result<(), ExtractBinaryError> {
     let tar_gz = open_file(downloaded_tarball_path)?;
     let tar = GzDecoder::new(tar_gz);
-    let mut ar = Archive::new(tar);
 
-    let mut x = ar
+    Archive::new(tar)
         .entries()
         .map_err(ReadArchiveEntries)?
         .enumerate()
@@ -130,11 +128,11 @@ fn extract_binary(
                 .ok()
                 .as_ref()
                 .and_then(|x| x.to_str())
-                .map(|str_path| str_path.ends_with("dfxvm"))
+                .map(|str_path| str_path.ends_with("dfxvm") || str_path.ends_with("dfxvm-init"))
                 .unwrap_or(false)
         })
-        .ok_or(DfxvmNotFound)?;
-    info!("found dfxvm, copying to {}", binary_path.display());
-    x.unpack(binary_path).map_err(UnpackBinary)?;
+        .ok_or(DfxvmNotFound)?
+        .unpack(binary_path)
+        .map_err(UnpackBinary)?;
     Ok(())
 }

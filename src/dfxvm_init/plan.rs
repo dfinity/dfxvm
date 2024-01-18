@@ -56,7 +56,7 @@ pub struct Plan {
 
 impl Plan {
     pub fn new(options: PlanOptions, locations: &Locations) -> Self {
-        let bin_dir = locations.data_local_dir().join("bin");
+        let bin_dir = locations.bin_dir();
         let env_path = locations.data_local_dir().join("env");
         let env_path_user_facing = get_env_path_user_facing().to_string();
         let profile_scripts = get_detected_profile_scripts();

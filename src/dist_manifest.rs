@@ -1,6 +1,5 @@
 use serde::Deserialize;
 use url::Url;
-
 use crate::error::dfxvm::self_update::LookupLatestVersionError;
 use crate::json::fetch_json;
 use crate::settings::Settings;

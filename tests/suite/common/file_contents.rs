@@ -17,7 +17,7 @@ pub fn dfx_tar_gz(script: &str) -> Vec<u8> {
 /// x dfx
 /// $ ls -l dfx
 /// -rwxr-xr-x    1 ericswanson  staff  128330472 Oct  5 00:45 dfx
-pub(crate) fn binary_tar_gz(binary_name: &str, contents: &[u8]) -> Vec<u8> {
+pub fn binary_tar_gz(binary_name: &str, contents: &[u8]) -> Vec<u8> {
     let tar_buffer = Vec::new();
     let mut tar = Builder::new(Vec::new());
 
@@ -62,7 +62,7 @@ pub fn manifest_json(latest: &str) -> String {
             "0.5.2"
         ]
     })
-    .to_string()
+        .to_string()
 }
 
 pub fn dist_manifest_json(latest: &str) -> String {
@@ -74,7 +74,7 @@ pub fn dist_manifest_json(latest: &str) -> String {
             }
         ]
     })
-    .to_string()
+        .to_string()
 }
 
 // dfxvm tarball looks like:

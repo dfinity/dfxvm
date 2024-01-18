@@ -1,8 +1,10 @@
-use crate::error::download::{DownloadFileError, VerifyChecksumError};
-use crate::error::env::NoHomeDirectoryError;
-use crate::error::fs::{OpenFileError, RemoveFileError};
-use crate::error::installation::InstallBinariesError;
-use crate::error::json::{FetchJsonDocError, LoadJsonFileError};
+use crate::error::{
+    download::{DownloadFileError, VerifyChecksumError},
+    env::NoHomeDirectoryError,
+    fs::{OpenFileError, RemoveFileError},
+    installation::InstallBinariesError,
+    json::{FetchJsonDocError, LoadJsonFileError},
+};
 use std::path::PathBuf;
 use std::process::Command;
 use thiserror::Error;

@@ -32,7 +32,7 @@ pub struct Cli {
 pub async fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, dfxvm_init::Error> {
     let arg1 = args.get(1).map(|a| &**a);
     if arg1 == Some("--self-replace".as_ref()) {
-        self_replace().unwrap();
+        self_replace(locations)?;
         return Ok(ExitCode::SUCCESS);
     }
 

@@ -25,13 +25,8 @@ impl Locations {
         self.version_dir(version).join("dfx")
     }
 
-    pub fn dfxvm_bin_path(&self) -> PathBuf {
-        self.data_local_dir.join("bin").join("dfxvm")
-    }
-
     pub fn self_update_path(&self) -> PathBuf {
-        self.data_local_dir
-            .join("bin")
+        self.bin_dir()
             .join("dfxvm-init-self-update")
     }
 
@@ -40,6 +35,9 @@ impl Locations {
     }
     pub fn data_local_dir(&self) -> &Path {
         &self.data_local_dir
+    }
+    pub fn bin_dir(&self) -> PathBuf {
+        self.data_local_dir.join("bin")
     }
 
     pub fn settings_path(&self) -> PathBuf {
@@ -54,7 +52,7 @@ impl Locations {
         let data_local_dir = project_dirs.data_local_dir().to_path_buf();
         let versions_dir = data_local_dir.join("versions");
         #[cfg(unix)]
-        let config_dir = home_dir()?.join(".config").join("dfx");
+            let config_dir = home_dir()?.join(".config").join("dfx");
         Ok(Self {
             data_local_dir,
             versions_dir,
