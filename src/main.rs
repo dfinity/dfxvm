@@ -9,6 +9,7 @@ mod cli;
 mod dfx;
 mod dfxvm;
 mod dfxvm_init;
+mod download;
 mod env;
 mod error;
 mod fs;
