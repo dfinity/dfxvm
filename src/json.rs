@@ -11,6 +11,7 @@ use crate::fs::read;
 use crate::log::log_error;
 use backoff::{future::retry_notify, ExponentialBackoff};
 use reqwest::{Client, Url};
+use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::path::Path;
 
@@ -35,9 +36,7 @@ pub fn save_json_file<T: Serialize>(path: &Path, value: &T) -> Result<(), SaveJs
     Ok(())
 }
 
-pub async fn fetch_json<T: for<'a> serde::de::DeserializeOwned>(
-    url: &Url,
-) -> Result<T, FetchJsonDocError> {
+pub async fn fetch_json<T: DeserializeOwned>(url: &Url) -> Result<T, FetchJsonDocError> {
     let client = Client::new();
     let notify = |err, dur| {
         log_error(&err);
@@ -56,7 +55,7 @@ pub async fn fetch_json<T: for<'a> serde::de::DeserializeOwned>(
     retry_notify(backoff, operation, notify).await
 }
 
-async fn attempt_fetch_json<T: for<'a> serde::de::DeserializeOwned>(
+async fn attempt_fetch_json<T: DeserializeOwned>(
     client: &Client,
     url: Url,
 ) -> Result<T, FetchJsonDocError> {
