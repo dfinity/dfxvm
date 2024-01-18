@@ -35,7 +35,7 @@ pub fn save_json_file<T: Serialize>(path: &Path, value: &T) -> Result<(), SaveJs
     Ok(())
 }
 
-pub async fn fetch_json<T: for<'a> serde::de::Deserialize<'a>>(
+pub async fn fetch_json<T: for<'a> serde::de::DeserializeOwned>(
     url: &Url,
 ) -> Result<T, FetchJsonDocError> {
     let client = Client::new();
@@ -56,7 +56,7 @@ pub async fn fetch_json<T: for<'a> serde::de::Deserialize<'a>>(
     retry_notify(backoff, operation, notify).await
 }
 
-async fn attempt_fetch_json<T: for<'a> serde::de::Deserialize<'a>>(
+async fn attempt_fetch_json<T: for<'a> serde::de::DeserializeOwned>(
     client: &Client,
     url: Url,
 ) -> Result<T, FetchJsonDocError> {
