@@ -17,10 +17,8 @@ use std::os::unix::process::CommandExt;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-pub fn main(args: &[OsString]) -> Result<ExitCode, dfx::Error> {
-    let locations = Locations::new()?;
-
-    let Some((version, args)) = get_dfx_version_and_command_args(args, &locations)? else {
+pub fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, dfx::Error> {
+    let Some((version, args)) = get_dfx_version_and_command_args(args, locations)? else {
         err!("Unable to determine which dfx version to call. To set a default version, run:");
         err!("    {}", style_command("dfxvm default <version>"));
         return Ok(ExitCode::FAILURE);

@@ -3,6 +3,7 @@ use crate::dfxvm::{
     self_update::self_update, uninstall::uninstall, update::update,
 };
 use crate::error::dfxvm;
+use crate::locations::Locations;
 use clap::{Parser, Subcommand};
 use semver::Version;
 use std::ffi::OsString;
@@ -78,18 +79,18 @@ pub struct SelfUpdateOpts {}
 #[derive(Parser)]
 pub struct SelfUninstallOpts {}
 
-pub async fn main(args: &[OsString]) -> Result<ExitCode, dfxvm::Error> {
+pub async fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, dfxvm::Error> {
     let cli = Cli::parse_from(args);
     match cli.command {
-        Command::Default(opts) => default(opts.version).await?,
-        Command::Install(opts) => install(opts.version).await?,
-        Command::List(_opts) => list()?,
+        Command::Default(opts) => default(opts.version, locations).await?,
+        Command::Install(opts) => install(opts.version, locations).await?,
+        Command::List(_opts) => list(locations)?,
         Command::SelfCommand(opts) => match opts.command {
-            SelfCommand::Update(_opts) => self_update()?,
-            SelfCommand::Uninstall(_opts) => self_uninstall()?,
+            SelfCommand::Update(_opts) => self_update(locations)?,
+            SelfCommand::Uninstall(_opts) => self_uninstall(locations)?,
         },
-        Command::Uninstall(opts) => uninstall(opts.version)?,
-        Command::Update(_opts) => update().await?,
+        Command::Uninstall(opts) => uninstall(opts.version, locations)?,
+        Command::Update(_opts) => update(locations).await?,
     };
     Ok(ExitCode::SUCCESS)
 }

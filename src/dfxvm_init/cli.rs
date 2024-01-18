@@ -5,6 +5,7 @@ use crate::dfxvm_init::plan::{
 };
 use crate::dfxvm_init::ui::Confirmation;
 use crate::error::dfxvm_init;
+use crate::locations::Locations;
 use clap::Parser;
 use semver::Version;
 use std::ffi::OsString;
@@ -27,7 +28,7 @@ pub struct Cli {
     no_modify_path: bool,
 }
 
-pub async fn main(args: &[OsString]) -> Result<ExitCode, dfxvm_init::Error> {
+pub async fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, dfxvm_init::Error> {
     let opts = Cli::parse_from(args);
 
     let confirmation = if opts.proceed {
@@ -42,7 +43,7 @@ pub async fn main(args: &[OsString]) -> Result<ExitCode, dfxvm_init::Error> {
         .with_dfx_version(dfx_version)
         .with_modify_path(!opts.no_modify_path);
 
-    initialize(options, confirmation).await?;
+    initialize(options, confirmation, locations).await?;
 
     Ok(ExitCode::SUCCESS)
 }

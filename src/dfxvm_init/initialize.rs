@@ -17,9 +17,9 @@ use std::path::Path;
 pub async fn initialize(
     options: PlanOptions,
     confirmation: Option<Confirmation>,
+    locations: &Locations,
 ) -> Result<(), dfxvm_init::Error> {
-    let locations = Locations::new()?;
-    let mut plan = Plan::new(options, &locations);
+    let mut plan = Plan::new(options, locations);
 
     ui::display::introduction(&plan);
 
@@ -38,7 +38,7 @@ pub async fn initialize(
         return Ok(());
     };
 
-    execute(&plan, &locations).await?;
+    execute(&plan, locations).await?;
 
     ui::display::success(&plan);
 
@@ -53,7 +53,7 @@ pub async fn execute(plan: &Plan, locations: &Locations) -> Result<(), ExecutePl
     install_binaries(&plan.bin_dir)?;
 
     match &plan.options.dfx_version {
-        DfxVersion::Latest => dfxvm::update().await?,
+        DfxVersion::Latest => dfxvm::update(locations).await?,
         DfxVersion::Specific(version) => dfxvm::set_default(version, locations).await?,
     }
 

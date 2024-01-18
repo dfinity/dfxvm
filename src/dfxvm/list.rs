@@ -4,12 +4,11 @@ use crate::settings::Settings;
 use itertools::Itertools;
 use semver::Version;
 
-pub fn list() -> Result<(), ListError> {
-    let locations = Locations::new()?;
+pub fn list(locations: &Locations) -> Result<(), ListError> {
     let settings = Settings::load_or_default(&locations.settings_path())?;
     let default_version = settings.default_version;
 
-    for version in installed_versions(&locations)? {
+    for version in installed_versions(locations)? {
         let default_indicator = if default_version.as_ref() == Some(&version) {
             " (default)"
         } else {

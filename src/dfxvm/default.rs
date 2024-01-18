@@ -7,12 +7,11 @@ use crate::locations::Locations;
 use crate::settings::Settings;
 use semver::Version;
 
-pub async fn default(version: Option<Version>) -> Result<(), DefaultError> {
-    let locations = Locations::new()?;
+pub async fn default(version: Option<Version>, locations: &Locations) -> Result<(), DefaultError> {
     if let Some(version) = version {
-        set_default(&version, &locations).await?;
+        set_default(&version, locations).await?;
     } else {
-        display_default(&locations)?;
+        display_default(locations)?;
     }
     Ok(())
 }
@@ -21,7 +20,7 @@ pub async fn set_default(version: &Version, locations: &Locations) -> Result<(),
     if installed(version, locations) {
         info!("using existing install for dfx {version}");
     } else {
-        install(version.clone()).await?;
+        install(version.clone(), locations).await?;
     }
 
     let path = locations.settings_path();

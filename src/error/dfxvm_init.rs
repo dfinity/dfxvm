@@ -1,6 +1,5 @@
 use crate::error::{
     dfxvm,
-    env::NoHomeDirectoryError,
     fs::{AppendToFileError, CreateDirAllError, ReadToStringError, WriteFileError},
     installation::InstallBinariesError,
 };
@@ -13,9 +12,6 @@ pub enum Error {
 
     #[error(transparent)]
     Interact(#[from] InteractError),
-
-    #[error(transparent)]
-    NoHomeDirectory(#[from] NoHomeDirectoryError),
 }
 
 #[derive(Error, Debug)]

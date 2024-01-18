@@ -7,8 +7,7 @@ use reqwest::Url;
 use semver::Version;
 use serde::Deserialize;
 
-pub async fn update() -> Result<(), UpdateError> {
-    let locations = Locations::new()?;
+pub async fn update(locations: &Locations) -> Result<(), UpdateError> {
     let settings = Settings::load_or_default(&locations.settings_path())?;
     let url = Url::parse(&settings.manifest_url())?;
 
@@ -18,7 +17,7 @@ pub async fn update() -> Result<(), UpdateError> {
     let latest_version = manifest.tags.latest;
     info!("latest dfx version is {latest_version}");
 
-    set_default(&latest_version, &locations).await?;
+    set_default(&latest_version, locations).await?;
 
     Ok(())
 }
