@@ -25,11 +25,18 @@ impl Locations {
         self.version_dir(version).join("dfx")
     }
 
+    pub fn self_update_path(&self) -> PathBuf {
+        self.bin_dir().join("dfxvm-init-self-update")
+    }
+
     pub fn config_dir(&self) -> &Path {
         &self.config_dir
     }
     pub fn data_local_dir(&self) -> &Path {
         &self.data_local_dir
+    }
+    pub fn bin_dir(&self) -> PathBuf {
+        self.data_local_dir.join("bin")
     }
 
     pub fn settings_path(&self) -> PathBuf {

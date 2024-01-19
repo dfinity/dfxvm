@@ -1,5 +1,6 @@
 use crate::error::{
     dfxvm,
+    dfxvm::self_update::SelfReplaceError,
     fs::{AppendToFileError, CreateDirAllError, ReadToStringError, WriteFileError},
     installation::InstallBinariesError,
 };
@@ -12,6 +13,9 @@ pub enum Error {
 
     #[error(transparent)]
     Interact(#[from] InteractError),
+
+    #[error(transparent)]
+    SelfReplace(#[from] SelfReplaceError),
 }
 
 #[derive(Error, Debug)]

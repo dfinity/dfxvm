@@ -1,9 +1,15 @@
-use crate::error::{env::GetCurrentDirError, fs::CanonicalizePathError, json::LoadJsonFileError};
+use crate::error::{
+    dfxvm::self_update::CleanupSelfUpdaterError, env::GetCurrentDirError,
+    fs::CanonicalizePathError, json::LoadJsonFileError,
+};
 use std::process::Command;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum Error {
+    #[error(transparent)]
+    CleanupSelfUpdater(#[from] CleanupSelfUpdaterError),
+
     #[error(transparent)]
     DetermineDfxVersion(#[from] DetermineDfxVersionError),
 

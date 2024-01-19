@@ -1,4 +1,5 @@
 use crate::error::{
+    dfxvm::self_update::CleanupSelfUpdaterError,
     fs::{RemoveDirAllError, RemoveFileError, RenameError},
     json::{FetchJsonDocError, LoadJsonFileError},
 };
@@ -7,13 +8,18 @@ use thiserror::Error;
 
 pub mod default;
 pub mod install;
+pub mod self_update;
 
 pub use default::DefaultError;
 pub use default::SetDefaultError;
 pub use install::InstallError;
+pub use self_update::SelfUpdateError;
 
 #[derive(Error, Debug)]
 pub enum Error {
+    #[error(transparent)]
+    CleanupSelfUpdater(#[from] CleanupSelfUpdaterError),
+
     #[error(transparent)]
     Default(#[from] DefaultError),
 
@@ -77,6 +83,3 @@ pub enum UpdateError {
 
 #[derive(Error, Debug)]
 pub enum SelfUninstallError {}
-
-#[derive(Error, Debug)]
-pub enum SelfUpdateError {}
