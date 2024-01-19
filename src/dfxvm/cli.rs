@@ -11,7 +11,7 @@ use std::process::ExitCode;
 
 /// The dfx version manager
 #[derive(Parser)]
-#[command(name = "dfxvm", arg_required_else_help = true)]
+#[command(name = "dfxvm", arg_required_else_help = true, version)]
 pub struct Cli {
     #[command(subcommand)]
     command: Command,
