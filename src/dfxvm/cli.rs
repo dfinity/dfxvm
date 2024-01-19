@@ -1,6 +1,6 @@
 use crate::dfxvm::{
-    default::default, install::install, list::list, self_uninstall::self_uninstall,
-    self_update::self_update, uninstall::uninstall, update::update,
+    cleanup_self_updater, default::default, install::install, list::list,
+    self_uninstall::self_uninstall, self_update::self_update, uninstall::uninstall, update::update,
 };
 use crate::error::dfxvm;
 use crate::locations::Locations;
@@ -80,13 +80,14 @@ pub struct SelfUpdateOpts {}
 pub struct SelfUninstallOpts {}
 
 pub async fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, dfxvm::Error> {
+    cleanup_self_updater(locations)?;
     let cli = Cli::parse_from(args);
     match cli.command {
         Command::Default(opts) => default(opts.version, locations).await?,
         Command::Install(opts) => install(opts.version, locations).await?,
         Command::List(_opts) => list(locations)?,
         Command::SelfCommand(opts) => match opts.command {
-            SelfCommand::Update(_opts) => self_update(locations)?,
+            SelfCommand::Update(_opts) => self_update(locations).await?,
             SelfCommand::Uninstall(_opts) => self_uninstall(locations)?,
         },
         Command::Uninstall(opts) => uninstall(opts.version, locations)?,

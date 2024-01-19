@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - ReleaseDate
 
+- Added `dfxvm self update` command, which updates dfxvm to the latest version.
+
 ## [0.1.2] - 2023-12-19
 
 - dfxvm-init now alters profile scripts to modify the PATH environment variable.

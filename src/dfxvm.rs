@@ -9,4 +9,6 @@ mod update;
 
 pub use cli::main;
 pub use default::set_default;
+pub use self_update::cleanup_self_updater;
+pub use self_update::self_replace;
 pub use update::update;
