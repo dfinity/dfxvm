@@ -16,10 +16,10 @@ for individual commands:
 
 - [dfx](dfx/dfx.md)
 - [dfxvm](dfxvm/dfxvm.md)
-  - [dfxvm default](dfxvm-default.md)
+  - [dfxvm default](dfxvm/dfxvm-default.md)
   - [dfxvm install](dfxvm/dfxvm-install.md)
-  - [dfxvm list](dfxvm-list.md)
-  - [dfxvm self](dfxvm/dfxvm-self.md)
+  - [dfxvm list](dfxvm/dfxvm-list.md)
+  - dfxvm self
     - [dfxvm self uninstall](dfxvm/dfxvm-self-uninstall.md)
     - [dfxvm self update](dfxvm/dfxvm-self-update.md)
   - [dfxvm uninstall](dfxvm/dfxvm-uninstall.md)
