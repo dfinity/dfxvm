@@ -23,7 +23,7 @@ pub enum Command {
     Install(InstallOpts),
     List(ListOpts),
     #[command(name = "self")]
-    SelfCommand(SelfOpts),
+    SelfCmd(SelfOpts),
     Uninstall(UninstallOpts),
     Update(UpdateOpts),
 }
@@ -86,7 +86,7 @@ pub async fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, 
         Command::Default(opts) => default(opts.version, locations).await?,
         Command::Install(opts) => install(opts.version, locations).await?,
         Command::List(_opts) => list(locations)?,
-        Command::SelfCommand(opts) => match opts.command {
+        Command::SelfCmd(opts) => match opts.command {
             SelfCommand::Update(_opts) => self_update(locations).await?,
             SelfCommand::Uninstall(_opts) => self_uninstall(locations)?,
         },
