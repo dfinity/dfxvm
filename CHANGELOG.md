@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - ReleaseDate
 
 - `dfxvm --version` now reports the version
+- changed the dfxvm-init `--proceed` parameter to `--yes`
 
 ## [0.1.3] - 2024-01-19
 
