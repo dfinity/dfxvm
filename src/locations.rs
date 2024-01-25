@@ -10,6 +10,7 @@ pub struct Locations {
     data_local_dir: PathBuf,
     versions_dir: PathBuf,
     config_dir: PathBuf,
+    dfx_cache_dir: PathBuf,
 }
 
 impl Locations {
@@ -39,8 +40,28 @@ impl Locations {
         self.data_local_dir.join("bin")
     }
 
+    pub fn dfx_proxy_path(&self) -> PathBuf {
+        self.bin_dir().join("dfx")
+    }
+
+    pub fn dfxvm_path(&self) -> PathBuf {
+        self.bin_dir().join("dfxvm")
+    }
+
     pub fn settings_path(&self) -> PathBuf {
         self.config_dir.join(SETTINGS_FILENAME)
+    }
+
+    pub fn env_path(&self) -> PathBuf {
+        self.data_local_dir.join("env")
+    }
+
+    pub fn network_dir(&self) -> PathBuf {
+        self.data_local_dir.join("network")
+    }
+
+    pub fn dfx_cache_dir(&self) -> &Path {
+        &self.dfx_cache_dir
     }
 }
 
@@ -52,10 +73,14 @@ impl Locations {
         let versions_dir = data_local_dir.join("versions");
         #[cfg(unix)]
         let config_dir = home_dir()?.join(".config").join("dfx");
+        #[cfg(unix)]
+        let dfx_cache_dir = home_dir()?.join(".cache").join("dfinity").join("versions");
+
         Ok(Self {
             data_local_dir,
             versions_dir,
             config_dir,
+            dfx_cache_dir,
         })
     }
 }

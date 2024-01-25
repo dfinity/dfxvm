@@ -1,6 +1,6 @@
 use crate::common::{
     file_contents,
-    file_contents::{bash_script, dfx_tar_gz},
+    file_contents::{bash_script, binary_tar_gz},
     target,
 };
 use httptest::http::{response, Response};
@@ -15,13 +15,17 @@ pub struct ReleaseAsset {
 
 impl ReleaseAsset {
     pub fn dfx_tarball(version: &str, snippet: &str) -> ReleaseAsset {
+        Self::dfx_tarball_with_dfx_contents(version, bash_script(snippet).as_bytes())
+    }
+
+    pub fn dfx_tarball_with_dfx_contents(version: &str, executable: &[u8]) -> ReleaseAsset {
         let filename = Self::dfx_tarball_filename(version);
         let version = Version::parse(version).unwrap();
 
         // must match the download_url_template in ReleaseServer::new
         let url_path = format!("/any/arbitrary/path/{version}/{filename}");
 
-        let contents = dfx_tar_gz(&bash_script(snippet));
+        let contents = binary_tar_gz("dfx", executable);
         ReleaseAsset {
             url_path,
             filename,

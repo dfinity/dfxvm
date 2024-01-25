@@ -15,9 +15,17 @@ fn enumerate_shells() -> Vec<Shell> {
 fn get_available_shells() -> impl Iterator<Item = Shell> {
     enumerate_shells().into_iter().filter(|sh| sh.does_exist())
 }
+
 pub fn get_detected_profile_scripts() -> Vec<ProfileScript> {
     get_available_shells()
         .flat_map(|sh| sh.update_rcs())
+        .collect()
+}
+
+pub fn get_all_profile_scripts() -> Vec<ProfileScript> {
+    enumerate_shells()
+        .iter()
+        .flat_map(|sh| sh.rcfiles())
         .collect()
 }
 
