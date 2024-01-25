@@ -8,7 +8,7 @@ to customize the installation.
 ## Usage
 
 ```bash
-dfxvm-init [--dfx-version <version>] [--proceed]
+dfxvm-init [--dfx-version <version>] [--yes]
 ```
 
 ### Options
@@ -16,7 +16,7 @@ dfxvm-init [--dfx-version <version>] [--proceed]
 | Option                    | Description |
 |---------------------------| --- |
 | `--dfx-version <version>` | The version of dfx to install. Defaults to the latest dfx version |
-| `--proceed`               | Skip confirmation prompt |
+| `--yes`                   | Skip confirmation prompt |
 | `--no-modify-path`        | Do not alter profile scripts to modify the PATH environment variable |
 
 ## Examples
@@ -36,5 +36,5 @@ dfxvm-init --dfx-version 0.14.4
 Install dfxvm and the latest version of dfx without prompting for confirmation
 
 ```bash
-dfxvm-init --proceed
+dfxvm-init --yes
 ```

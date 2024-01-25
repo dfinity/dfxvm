@@ -41,7 +41,7 @@ fn default_installation() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .assert()
         .success()
         .stdout(contains("dfxvm is installed now."))
@@ -99,7 +99,7 @@ fn specific_dfx_version() {
         .dfxvm_init()
         .arg("--dfx-version")
         .arg("0.14.7")
-        .arg("--proceed")
+        .arg("--yes")
         .assert()
         .success()
         .stdout(contains("dfxvm is installed now."))
@@ -159,7 +159,7 @@ fn xdg_data_home_set() {
         .dfxvm_init()
         .arg("--dfx-version")
         .arg("0.14.7")
-        .arg("--proceed")
+        .arg("--yes")
         .assert()
         .success()
         .stdout(contains("dfxvm is installed now."))
@@ -225,7 +225,7 @@ fn sets_permissions_from(from_mode: u32) {
     const MODE_FILE: u32 = 0o100000;
     assert_eq!(metadata.permissions().mode(), MODE_FILE | from_mode);
 
-    home_dir.dfxvm_init().arg("--proceed").assert().success();
+    home_dir.dfxvm_init().arg("--yes").assert().success();
 
     // should have left the source file alone
     let metadata = std::fs::metadata(&dfxvm_init).unwrap();
@@ -247,7 +247,7 @@ fn creates_dot_profile() {
 
     server.expect_install_latest();
 
-    home_dir.dfxvm_init().arg("--proceed").assert().success();
+    home_dir.dfxvm_init().arg("--yes").assert().success();
 
     let dot_profile = home_dir.join(".profile");
     let contents = std::fs::read_to_string(dot_profile).unwrap();
@@ -264,7 +264,7 @@ fn updates_dot_profile() {
     let dot_profile = home_dir.join(".profile");
     std::fs::write(&dot_profile, FAKE_RC).unwrap();
 
-    home_dir.dfxvm_init().arg("--proceed").assert().success();
+    home_dir.dfxvm_init().arg("--yes").assert().success();
 
     let expected = FAKE_RC.to_owned() + &posix_source();
     let new_dot_profile = std::fs::read_to_string(&dot_profile).unwrap();
@@ -281,7 +281,7 @@ fn adds_newline_if_existing_file_does_not_end_in_one() {
     let dot_profile = home_dir.join(".profile");
     std::fs::write(&dot_profile, FAKE_RC.trim_end()).unwrap();
 
-    home_dir.dfxvm_init().arg("--proceed").assert().success();
+    home_dir.dfxvm_init().arg("--yes").assert().success();
 
     let expected = FAKE_RC.to_owned() + &posix_source();
     let new_dot_profile = std::fs::read_to_string(&dot_profile).unwrap();
@@ -303,7 +303,7 @@ fn updates_bash_rcs() {
         std::fs::write(rc, FAKE_RC).unwrap();
     }
 
-    home_dir.dfxvm_init().arg("--proceed").assert().success();
+    home_dir.dfxvm_init().arg("--yes").assert().success();
 
     let expected = FAKE_RC.to_owned() + &posix_source();
     for rc in &rcs {
@@ -323,7 +323,7 @@ fn does_not_create_bash_rcs() {
         .map(|rc| home_dir.join(rc))
         .collect();
 
-    home_dir.dfxvm_init().arg("--proceed").assert().success();
+    home_dir.dfxvm_init().arg("--yes").assert().success();
 
     for rc in &rcs {
         assert!(!rc.exists(), "{} should not exist", rc.display());
@@ -340,7 +340,7 @@ fn detects_zsh_by_shell_env_var() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .env("SHELL", "/bin/zsh")
         .env("PATH", home_dir.join("nothing"))
         .assert()
@@ -370,7 +370,7 @@ fn detects_zsh_by_zsh_on_path() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .env("PATH", bin.path())
         .assert()
         .success();
@@ -397,7 +397,7 @@ fn does_not_detect_zsh_by_zdotdir_env_var() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .env("ZDOTDIR", &zdotdir)
         .env("PATH", home_dir.join("nothing"))
         .assert()
@@ -417,7 +417,7 @@ fn creates_zshenv() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .env("SHELL", "/bin/zsh")
         .env("PATH", home_dir.join("nothing"))
         .assert()
@@ -441,7 +441,7 @@ fn updates_zshenv() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .env("SHELL", "/bin/zsh")
         .env("PATH", home_dir.join("nothing"))
         .assert()
@@ -465,7 +465,7 @@ fn creates_zdotdir_zshenv() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .env("SHELL", "/bin/zsh")
         .env("ZDOTDIR", &zdotdir)
         .env("PATH", home_dir.join("nothing"))
@@ -492,7 +492,7 @@ fn updates_zdotdir_zshenv() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .env("SHELL", "/bin/zsh")
         .env("ZDOTDIR", &zdotdir)
         .env("PATH", home_dir.join("nothing"))
@@ -539,7 +539,7 @@ fn gets_zdotdir_by_calling_zsh() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .env("SHELL", "/bin/sh")
         .assert()
         .success();
@@ -560,7 +560,7 @@ fn ignores_empty_zdotdir_env_var() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .env("SHELL", "/bin/zsh")
         .env("ZDOTDIR", "")
         .env("PATH", home_dir.join("nothing"))
@@ -589,7 +589,7 @@ fn prefers_zdotdir_to_home_zshenv_if_neither_exist() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .env("SHELL", "/bin/zsh")
         .env("ZDOTDIR", &zdotdir)
         .assert()
@@ -621,7 +621,7 @@ fn prefers_zdotdir_to_home_zshenv_if_both_exist() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .env("SHELL", "/bin/zsh")
         .env("ZDOTDIR", &zdotdir)
         .assert()
@@ -657,7 +657,7 @@ fn prefers_home_zshenv_if_zdotdir_zshenv_does_not_exist() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .env("SHELL", "/bin/zsh")
         .env("ZDOTDIR", &zdotdir)
         .assert()
@@ -684,7 +684,7 @@ fn confirmation_message_profile_scripts_modified() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .assert()
         .success()
         .stdout(contains("dfxvm is installed now."))
@@ -716,7 +716,7 @@ fn confirmation_message_profile_scripts_not_modified() {
 
     home_dir
         .dfxvm_init()
-        .arg("--proceed")
+        .arg("--yes")
         .arg("--no-modify-path")
         .assert()
         .success()

@@ -22,7 +22,7 @@ pub struct Cli {
 
     /// Automatically confirm options and proceed with install.
     #[clap(long)]
-    proceed: bool,
+    yes: bool,
 
     /// Don't configure the PATH environment variable in profile scripts.
     #[clap(long)]
@@ -38,7 +38,7 @@ pub async fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, 
 
     let opts = Cli::parse_from(args);
 
-    let confirmation = if opts.proceed {
+    let confirmation = if opts.yes {
         Some(Confirmation::Proceed)
     } else {
         None
