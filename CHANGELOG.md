@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - ReleaseDate
 
+- removed openssl dependencies
+
 ## [0.2.0] - 2024-01-30
 
 - `dfxvm --version` now reports the version
