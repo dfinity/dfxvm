@@ -4,6 +4,7 @@
 # so copyleft licenses like MPL which allow static linking are A-OK
 [licenses]
 default = "deny"
+unlicensed = "allow"
 
 allow = [
     "Apache-2.0",
