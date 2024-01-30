@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `dfxvm --version` now reports the version
 - changed the dfxvm-init `--proceed` parameter to `--yes`
+- static link to openssl
 
 ## [0.1.3] - 2024-01-19
 
