@@ -44,6 +44,10 @@ impl TempHomeDir {
         self.tempdir.path()
     }
 
+    pub fn dfx_cache_versions_dir(&self) -> PathBuf {
+        self.path().join(".cache").join("dfinity").join("versions")
+    }
+
     pub fn join<P: AsRef<Path>>(&self, path: P) -> PathBuf {
         self.path().join(path.as_ref())
     }
@@ -125,6 +129,10 @@ impl TempHomeDir {
         self.versions_dir().join(version)
     }
 
+    pub fn dfx_version_path(&self, version: &str) -> PathBuf {
+        self.dfx_version_dir(version).join("dfx")
+    }
+
     pub fn dfx_version_dirs(&self) -> Vec<String> {
         self.versions_dir()
             .read_dir()
@@ -147,12 +155,20 @@ impl TempHomeDir {
         self.dfx_version_dir(version).join("dfx")
     }
 
+    pub fn installed_bin_dir(&self) -> PathBuf {
+        self.data_local_dir().join("bin")
+    }
+
     pub fn installed_dfxvm_path(&self) -> PathBuf {
-        self.data_local_dir().join("bin").join("dfxvm")
+        self.installed_bin_dir().join("dfxvm")
     }
 
     pub fn installed_dfx_proxy_path(&self) -> PathBuf {
-        self.data_local_dir().join("bin").join("dfx")
+        self.installed_bin_dir().join("dfx")
+    }
+
+    pub fn installed_env_path(&self) -> PathBuf {
+        self.data_local_dir().join("env")
     }
 
     pub fn create_executable_dfx_script(&self, version: &str, snippet: &str) -> PathBuf {

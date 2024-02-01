@@ -6,10 +6,6 @@ use sha2::{Digest, Sha256};
 use std::io::Write;
 use tar::Builder;
 
-pub fn dfx_tar_gz(script: &str) -> Vec<u8> {
-    binary_tar_gz("dfx", script.as_bytes())
-}
-
 /// make a .tar.gz that looks like a dfx release tarball
 /// $ tar -tvf dfx-0.15.1-x86_64-darwin.tar.gz
 // -rwxr-xr-x  0 runner staff 128330472 Oct  5 00:45 dfx

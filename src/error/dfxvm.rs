@@ -8,11 +8,13 @@ use thiserror::Error;
 
 pub mod default;
 pub mod install;
+pub mod self_uninstall;
 pub mod self_update;
 
 pub use default::DefaultError;
 pub use default::SetDefaultError;
 pub use install::InstallError;
+pub use self_uninstall::SelfUninstallError;
 pub use self_update::SelfUpdateError;
 
 #[derive(Error, Debug)]
@@ -80,6 +82,3 @@ pub enum UpdateError {
     #[error(transparent)]
     SetDefault(#[from] SetDefaultError),
 }
-
-#[derive(Error, Debug)]
-pub enum SelfUninstallError {}

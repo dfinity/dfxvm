@@ -6,7 +6,7 @@ use std::path::PathBuf;
 
 // This fake rc copied from https://github.com/rust-lang/rustup/blob/master/tests/suite/cli_paths.rs
 // Let's write a fake .rc which looks vaguely like a real script.
-const FAKE_RC: &str = r#"
+pub const FAKE_RC: &str = r#"
 # Sources fruity punch.
 . ~/fruit/punch
 
@@ -14,7 +14,7 @@ const FAKE_RC: &str = r#"
 export PATH="$HOME/apple/bin"
 "#;
 
-fn posix_source() -> String {
+pub fn posix_source() -> String {
     #[cfg(target_os = "macos")]
     let env_path = "$HOME/Library/Application Support/org.dfinity.dfx/env";
     #[cfg(target_os = "linux")]

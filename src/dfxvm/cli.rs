@@ -77,7 +77,11 @@ pub struct SelfUpdateOpts {}
 
 /// Uninstall dfxvm and all versions of dfx
 #[derive(Parser)]
-pub struct SelfUninstallOpts {}
+pub struct SelfUninstallOpts {
+    /// Automatically confirm un-installation.
+    #[clap(long)]
+    yes: bool,
+}
 
 pub async fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, dfxvm::Error> {
     cleanup_self_updater(locations)?;
@@ -88,7 +92,7 @@ pub async fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, 
         Command::List(_opts) => list(locations)?,
         Command::SelfCmd(opts) => match opts.command {
             SelfCommand::Update(_opts) => self_update(locations).await?,
-            SelfCommand::Uninstall(_opts) => self_uninstall(locations)?,
+            SelfCommand::Uninstall(opts) => self_uninstall(opts.yes, locations)?,
         },
         Command::Uninstall(opts) => uninstall(opts.version, locations)?,
         Command::Update(_opts) => update(locations).await?,

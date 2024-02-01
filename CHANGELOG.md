@@ -9,13 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - ReleaseDate
 
-- removed openssl dependencies
+- Removed openssl dependencies
+- Added `dfxvm self uninstall` command, which uninstalls dfxvm and all versions of dfx.
 
 ## [0.2.0] - 2024-01-30
 
 - `dfxvm --version` now reports the version
-- changed the dfxvm-init `--proceed` parameter to `--yes`
-- static link to openssl
+- Changed the dfxvm-init `--proceed` parameter to `--yes`
+- Static link to openssl
 
 ## [0.1.3] - 2024-01-19
 
