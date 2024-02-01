@@ -107,7 +107,7 @@ fn all_process_exe_paths() -> Vec<PathBuf> {
     info.refresh_processes();
     info.processes()
         .iter()
-        .map(|(_pid, proc)| proc.exe().unwrap().to_path_buf())
+        .filter_map(|(_pid, proc)| proc.exe().map(|p| p.to_path_buf()))
         .collect()
 }
 
