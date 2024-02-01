@@ -18,7 +18,7 @@ fn self_uninstall() {
     server.expect_get(&sha256);
     server.expect_get_manifest(&manifest_json("0.15.0"));
 
-    let mut all_rcs = vec![
+    let all_rcs = [
         ".zshenv",
         ".profile",
         ".bash_profile",
