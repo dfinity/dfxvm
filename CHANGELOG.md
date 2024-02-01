@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - ReleaseDate
 
 - Removed openssl dependencies
-- Added `dfxvm self uninstall` command, which uninstalls dfxvma and all versions of dfx.
+- Added `dfxvm self uninstall` command, which uninstalls dfxvm and all versions of dfx.
 
 ## [0.2.0] - 2024-01-30
 
