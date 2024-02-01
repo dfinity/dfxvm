@@ -2,24 +2,28 @@ use crate::dfxvm;
 use crate::dfxvm_init::{
     plan::{DfxVersion, Plan, PlanOptions},
     ui,
-    ui::Confirmation,
+    ui::{select_deletion_strategy, Confirmation, DeletionStrategy},
 };
 use crate::error::{
     dfxvm_init,
-    dfxvm_init::{ExecutePlanError, UpdateProfileScriptsError},
-    fs::WriteFileError,
+    dfxvm_init::{
+        DeleteDfxOnPathError, DeleteDfxOnPathError::CallSudoRm, ExecutePlanError,
+        UpdateProfileScriptsError,
+    },
+    fs::{RemoveFileError, WriteFileError},
 };
-use crate::fs::{append_to_file, create_dir_all, read_to_string};
+use crate::fs::{append_to_file, create_dir_all, read_to_string, remove_file};
 use crate::installation::{env_file_contents, install_binaries, ProfileScript};
 use crate::locations::Locations;
-use std::path::Path;
+use std::path::{Path, PathBuf};
+use std::process::Command;
 
 pub async fn initialize(
     options: PlanOptions,
     confirmation: Option<Confirmation>,
     locations: &Locations,
 ) -> Result<(), dfxvm_init::Error> {
-    let mut plan = Plan::new(options, locations);
+    let mut plan = Plan::new(options, locations)?;
 
     ui::display::introduction(&plan);
 
@@ -46,6 +50,11 @@ pub async fn initialize(
 }
 
 pub async fn execute(plan: &Plan, locations: &Locations) -> Result<(), ExecutePlanError> {
+    remove_uninstall_script(locations)?;
+    if plan.options.delete_dfx_on_path {
+        delete_dfx_on_path(plan)?;
+    }
+
     create_dir_all(&plan.bin_dir)?;
 
     create_env_file(&plan.env_path)?;
@@ -61,6 +70,60 @@ pub async fn execute(plan: &Plan, locations: &Locations) -> Result<(), ExecutePl
         update_profile_scripts(&plan.profile_scripts)?;
     }
 
+    Ok(())
+}
+
+fn remove_uninstall_script(locations: &Locations) -> Result<(), RemoveFileError> {
+    let path = locations.dfinity_cache_dir().join("uninstall.sh");
+    if path.exists() {
+        remove_file(&path)?;
+        info!("deleted: {}", path.display());
+    }
+    Ok(())
+}
+
+fn delete_dfx_on_path(plan: &Plan) -> Result<(), DeleteDfxOnPathError> {
+    loop {
+        let remaining = delete_and_filter(&plan.dfx_on_path);
+
+        if remaining.is_empty() {
+            break Ok(());
+        }
+
+        ui::display::need_to_delete_old_dfx(plan);
+
+        match select_deletion_strategy()? {
+            DeletionStrategy::Manual => {}
+            DeletionStrategy::CallSudo => sudo_rm(remaining)?,
+            DeletionStrategy::DontDelete => break Ok(()),
+        }
+    }
+}
+
+fn delete_and_filter(dfx_on_path: &[PathBuf]) -> Vec<PathBuf> {
+    dfx_on_path
+        .iter()
+        .filter(|p| {
+            if !p.exists() {
+                false
+            } else if remove_file(p).is_ok() {
+                info!("deleted: {}", p.display());
+                false
+            } else {
+                true
+            }
+        })
+        .cloned()
+        .collect()
+}
+
+fn sudo_rm(remaining: Vec<PathBuf>) -> Result<(), DeleteDfxOnPathError> {
+    let _ = Command::new("sudo")
+        .arg("rm")
+        .arg("-f")
+        .args(remaining.iter().map(|p| (*p).clone().into_os_string()))
+        .status()
+        .map_err(CallSudoRm)?;
     Ok(())
 }
 

@@ -29,7 +29,7 @@ pub fn self_uninstall(yes: bool, locations: &Locations) -> Result<(), SelfUninst
 
     killall_dfx(locations);
     delete_dir(&locations.network_dir())?;
-    delete_dir(locations.dfx_cache_dir())?;
+    delete_dir(locations.dfinity_cache_dir())?;
     delete_dir(locations.versions_dir())?;
     delete_file(&locations.dfx_proxy_path())?;
     uninstall_from_profile_scripts()?;
@@ -78,14 +78,14 @@ fn killall_dfx(locations: &Locations) {
 
 fn killany_dfx(locations: &Locations) -> bool {
     let versions_dir = locations.versions_dir();
-    let dfx_cache_dir = locations.dfx_cache_dir();
+    let dfinity_cache_versions_dir = locations.dfinity_cache_versions_dir();
 
     let mut info = System::new();
     info.refresh_processes();
     let mut n = 0;
     for (pid, proc) in info.processes() {
         if let Some(exe) = proc.exe() {
-            if exe.starts_with(versions_dir) || exe.starts_with(dfx_cache_dir) {
+            if exe.starts_with(versions_dir) || exe.starts_with(&dfinity_cache_versions_dir) {
                 info!("killing {} {}", pid.as_u32(), exe.display());
                 n += 1;
                 proc.kill();
