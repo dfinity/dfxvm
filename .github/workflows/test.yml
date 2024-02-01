@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - ens/sdk-1273-self-uninstall
   pull_request:
 
 jobs:

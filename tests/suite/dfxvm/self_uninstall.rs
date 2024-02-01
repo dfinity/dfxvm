@@ -50,7 +50,7 @@ fn self_uninstall() {
         let rc_path = home_dir.join(rc);
         let rc = std::fs::read_to_string(&rc_path).unwrap();
         let expected = FAKE_RC.to_owned() + &posix_source();
-        assert_eq!(rc, expected);
+        assert_eq!(rc, expected, "rc: {}", rc_path.display());
     }
     assert!(home_dir.dfx_cache_versions_dir().exists());
     assert!(all_process_exe_paths().contains(&home_dir.dfx_version_path("0.15.0")));
