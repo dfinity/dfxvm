@@ -18,7 +18,7 @@ fn self_uninstall() {
     server.expect_get(&sha256);
     server.expect_get_manifest(&manifest_json("0.15.0"));
 
-    let all_rcs = [
+    let mut all_rcs = vec![
         ".zshenv",
         ".profile",
         ".bash_profile",
@@ -31,7 +31,12 @@ fn self_uninstall() {
         std::fs::write(&rc_path, FAKE_RC).unwrap();
     }
 
-    home_dir.dfxvm_init().arg("--yes").assert().success();
+    home_dir
+        .dfxvm_init()
+        .arg("--yes")
+        .env("SHELL", "zsh") // force .zshenv update
+        .assert()
+        .success();
 
     populate_dfx_cache_versions(&home_dir, &fake_dfx);
     populate_local_network_dir(&home_dir);
