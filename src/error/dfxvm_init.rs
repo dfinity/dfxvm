@@ -3,8 +3,7 @@ use crate::error::{
     dfxvm::self_update::SelfReplaceError,
     fs::{
         AppendToFileError, CanonicalizePathError, CreateDirAllError, ReadToStringError,
-        RemoveFileError,
-        WriteFileError,
+        RemoveFileError, WriteFileError,
     },
     installation::InstallBinariesError,
 };
