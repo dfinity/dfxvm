@@ -33,7 +33,7 @@ see [CONTRIBUTING.md](CONTRIBUTING.md). Contributors must agree to a [CLA][cla].
 
 Copyright 2023 DFINITY Stiftung <sdk@dfinity.org>.
 
-dfxvm is licensed under the [Apache 2.0 License](LICENSE).
+dfxvm is licensed under the [Apache 2.0 License](https://github.com/dfinity/dfxvm/blob/main/LICENSE).
 
 ## Acknowledgements
 
