@@ -3,6 +3,7 @@ use crate::common::{
     executable::{create_executable, wait_until_file_is_not_busy},
     file_contents,
     file_contents::bash_script,
+    paths::MINIMAL_PATH,
     project_dirs, Settings,
 };
 use itertools::Itertools;
@@ -44,8 +45,24 @@ impl TempHomeDir {
         self.tempdir.path()
     }
 
-    pub fn dfx_cache_versions_dir(&self) -> PathBuf {
-        self.path().join(".cache").join("dfinity").join("versions")
+    pub fn dfinity_cache_dir(&self) -> PathBuf {
+        self.join(".cache").join("dfinity")
+    }
+
+    pub fn legacy_uninstall_script_path(&self) -> PathBuf {
+        self.dfinity_cache_dir().join("uninstall.sh")
+    }
+
+    pub fn dfinity_cache_versions_dir(&self) -> PathBuf {
+        self.dfinity_cache_dir().join("versions")
+    }
+
+    pub fn cache_downloads_path(&self) -> PathBuf {
+        self.dfinity_cache_dir().join("downloads")
+    }
+
+    pub fn cache_pulled_path(&self) -> PathBuf {
+        self.dfinity_cache_dir().join("pulled")
     }
 
     pub fn join<P: AsRef<Path>>(&self, path: P) -> PathBuf {
@@ -68,7 +85,7 @@ impl TempHomeDir {
         let mut command = Command::new(program.as_ref());
 
         command.env_clear();
-        command.env("PATH", "/usr/bin:/bin:/usr/sbin:/sbin");
+        command.env("PATH", MINIMAL_PATH);
         command.env("HOME", self.path());
         if let Some(xdg_data_home) = &self.xdg_data_home {
             command.env("XDG_DATA_HOME", xdg_data_home);

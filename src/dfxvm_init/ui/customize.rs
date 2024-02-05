@@ -14,6 +14,11 @@ pub fn customize(plan: Plan) -> Result<Plan, InteractError> {
     let dfx_version = select_dfx_version(&options.dfx_version)?;
     options = options.with_dfx_version(dfx_version);
 
+    if !plan.dfx_on_path.is_empty() {
+        let delete_dfx_on_path = delete_dfx_on_path(options.delete_dfx_on_path)?;
+        options = options.delete_dfx_on_path(delete_dfx_on_path);
+    }
+
     let modify_path = select_modify_path(options.modify_path)?;
     options = options.with_modify_path(modify_path);
 
@@ -47,6 +52,14 @@ fn select_dfx_version(install_dfx: &DfxVersion) -> Result<DfxVersion, InteractEr
         }
     };
     Ok(dfx_version)
+}
+
+fn delete_dfx_on_path(current: bool) -> Result<bool, InteractError> {
+    let modify = Confirm::new()
+        .with_prompt("Delete dfx binaries found on PATH?")
+        .default(current)
+        .interact()?;
+    Ok(modify)
 }
 
 fn select_modify_path(current: bool) -> Result<bool, InteractError> {

@@ -1,13 +1,19 @@
 use crate::error::{
     dfxvm,
     dfxvm::self_update::SelfReplaceError,
-    fs::{AppendToFileError, CreateDirAllError, ReadToStringError, WriteFileError},
+    fs::{
+        AppendToFileError, CanonicalizePathError, CreateDirAllError, ReadToStringError,
+        RemoveFileError, WriteFileError,
+    },
     installation::InstallBinariesError,
 };
 use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum Error {
+    #[error(transparent)]
+    CanonicalizePath(#[from] CanonicalizePathError),
+
     #[error(transparent)]
     ExecutePlan(#[from] ExecutePlanError),
 
@@ -24,10 +30,16 @@ pub enum ExecutePlanError {
     CreateDirectories(#[from] CreateDirAllError),
 
     #[error(transparent)]
+    DeleteDfxOnPath(#[from] DeleteDfxOnPathError),
+
+    #[error(transparent)]
     SetDefault(#[from] dfxvm::SetDefaultError),
 
     #[error(transparent)]
     InstallBinaries(#[from] InstallBinariesError),
+
+    #[error(transparent)]
+    RemoveFile(#[from] RemoveFileError),
 
     #[error(transparent)]
     Update(#[from] dfxvm::UpdateError),
@@ -53,4 +65,13 @@ pub enum UpdateProfileScriptsError {
 
     #[error(transparent)]
     ReadProfileScript(#[from] ReadToStringError),
+}
+
+#[derive(Error, Debug)]
+pub enum DeleteDfxOnPathError {
+    #[error(transparent)]
+    Interact(#[from] InteractError),
+
+    #[error("failed to call sudo rm")]
+    CallSudoRm(#[from] std::io::Error),
 }

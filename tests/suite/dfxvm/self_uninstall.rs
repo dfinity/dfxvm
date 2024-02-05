@@ -38,7 +38,7 @@ fn self_uninstall() {
         .assert()
         .success();
 
-    populate_dfx_cache_versions(&home_dir, &fake_dfx);
+    populate_dfinity_cache(&home_dir, &fake_dfx);
     populate_local_network_dir(&home_dir);
 
     std::fs::write(home_dir.installed_bin_dir().join("junk"), "junk").unwrap();
@@ -57,7 +57,7 @@ fn self_uninstall() {
         let expected = FAKE_RC.to_owned() + &posix_source();
         assert_eq!(rc, expected, "rc: {}", rc_path.display());
     }
-    assert!(home_dir.dfx_cache_versions_dir().exists());
+    assert!(home_dir.dfinity_cache_versions_dir().exists());
     assert!(all_process_exe_paths().contains(&home_dir.dfx_version_path("0.15.0")));
 
     home_dir
@@ -78,7 +78,7 @@ fn self_uninstall() {
         let expected = FAKE_RC.to_owned() + "\n";
         assert_eq!(rc, expected);
     }
-    assert!(!home_dir.dfx_cache_versions_dir().exists());
+    assert!(!home_dir.dfinity_cache_dir().exists());
     assert!(!all_process_exe_paths().contains(&home_dir.dfx_version_path("0.15.0")));
     assert!(!home_dir.data_local_dir().exists());
 
@@ -91,13 +91,26 @@ fn populate_local_network_dir(temp_home_dir: &TempHomeDir) {
     std::fs::write(dir.join("webserver-port"), "7654").unwrap();
 }
 
-fn populate_dfx_cache_versions(home_dir: &TempHomeDir, fake_dfx: &[u8]) {
+fn populate_dfinity_cache(home_dir: &TempHomeDir, fake_dfx: &[u8]) {
+    std::fs::create_dir_all(home_dir.cache_pulled_path()).unwrap();
+    std::fs::write(home_dir.cache_pulled_path().join("a-file"), "whatever").unwrap();
+    std::fs::create_dir_all(home_dir.cache_downloads_path()).unwrap();
+    std::fs::write(
+        home_dir.cache_downloads_path().join("dfx-0.7.2.tar.gz"),
+        "ok",
+    )
+    .unwrap();
+    std::fs::write(
+        home_dir.legacy_uninstall_script_path(),
+        "#!/usr/bin/env bash\necho uninstall",
+    )
+    .unwrap();
     populate_dfx_cache_version("0.15.0", home_dir, fake_dfx);
     populate_dfx_cache_version("0.14.4", home_dir, fake_dfx);
 }
 
 fn populate_dfx_cache_version(version: &str, home_dir: &TempHomeDir, fake_dfx: &[u8]) {
-    let dir = home_dir.dfx_cache_versions_dir().join(version);
+    let dir = home_dir.dfinity_cache_versions_dir().join(version);
     std::fs::create_dir_all(&dir).unwrap();
     std::fs::write(dir.join("dfx"), fake_dfx).unwrap();
 }

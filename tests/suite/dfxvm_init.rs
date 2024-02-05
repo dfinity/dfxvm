@@ -1,5 +1,9 @@
-use crate::common::{file_contents::manifest_json, ReleaseAsset, ReleaseServer, TempHomeDir};
+use crate::common::{
+    file_contents::manifest_json, paths::add_to_minimal_path, ReleaseAsset, ReleaseServer,
+    TempHomeDir,
+};
 use assert_cmd::prelude::*;
+use predicates::boolean::PredicateBooleanExt;
 use predicates::str::*;
 use std::os::unix::fs::PermissionsExt;
 use std::path::PathBuf;
@@ -730,4 +734,96 @@ fn confirmation_message_profile_scripts_not_modified() {
 
     assert!(home_dir.installed_dfx_path("0.15.0").exists());
     assert_eq!(home_dir.settings().read_default_version(), "0.15.0");
+}
+
+#[test]
+fn deletes_dfx_on_path() {
+    let home_dir = TempHomeDir::new();
+    let server = ReleaseServer::new(&home_dir);
+
+    let tarball = ReleaseAsset::dfx_tarball("0.15.0", "echo 'this is dfx 0.15.0'");
+    let sha256 = ReleaseAsset::sha256(&tarball);
+    server.expect_get(&tarball);
+    server.expect_get(&sha256);
+    server.expect_get_manifest(&manifest_json("0.15.0"));
+
+    let another_bin_dir = home_dir.join("another-bin-dir");
+    let dfx_on_path = another_bin_dir.join("dfx");
+    std::fs::create_dir(&another_bin_dir).unwrap();
+    std::fs::write(&dfx_on_path, "does not matter").unwrap();
+
+    home_dir
+        .dfxvm_init()
+        .arg("--yes")
+        .env("PATH", add_to_minimal_path(&another_bin_dir))
+        .assert()
+        .success()
+        .stderr(is_match("deleted:.*another-bin-dir/dfx").unwrap());
+
+    assert!(!dfx_on_path.exists());
+}
+
+#[test]
+fn does_not_delete_dfx_proxy() {
+    let home_dir = TempHomeDir::new();
+    let server = ReleaseServer::new(&home_dir);
+
+    let tarball = ReleaseAsset::dfx_tarball("0.15.0", "echo 'this is dfx 0.15.0'");
+    let sha256 = ReleaseAsset::sha256(&tarball);
+    server.expect_get(&tarball);
+    server.expect_get(&sha256);
+    server.expect_get_manifest(&manifest_json("0.15.0"));
+
+    home_dir.install_dfxvm_bin_as_dfx_proxy();
+
+    home_dir
+        .dfxvm_init()
+        .arg("--yes")
+        .env("PATH", add_to_minimal_path(home_dir.installed_bin_dir()))
+        .assert()
+        .success()
+        .stderr(contains("deleted:").not());
+}
+
+#[test]
+fn copes_with_nonexistent_dir_on_path() {
+    let home_dir = TempHomeDir::new();
+    let server = ReleaseServer::new(&home_dir);
+
+    let tarball = ReleaseAsset::dfx_tarball("0.15.0", "echo 'this is dfx 0.15.0'");
+    let sha256 = ReleaseAsset::sha256(&tarball);
+    server.expect_get(&tarball);
+    server.expect_get(&sha256);
+    server.expect_get_manifest(&manifest_json("0.15.0"));
+
+    home_dir
+        .dfxvm_init()
+        .arg("--yes")
+        .env("PATH", add_to_minimal_path(home_dir.join("does-not-exist")))
+        .assert()
+        .success();
+}
+
+#[test]
+fn removes_dfx_uninstall_script() {
+    let home_dir = TempHomeDir::new();
+    let server = ReleaseServer::new(&home_dir);
+
+    let tarball = ReleaseAsset::dfx_tarball("0.15.0", "echo 'this is dfx 0.15.0'");
+    let sha256 = ReleaseAsset::sha256(&tarball);
+    server.expect_get(&tarball);
+    server.expect_get(&sha256);
+    server.expect_get_manifest(&manifest_json("0.15.0"));
+
+    std::fs::create_dir_all(home_dir.dfinity_cache_dir()).unwrap();
+    let uninstall_script_path = home_dir.dfinity_cache_dir().join("uninstall.sh");
+    std::fs::write(&uninstall_script_path, "does not matter").unwrap();
+    home_dir
+        .dfxvm_init()
+        .arg("--yes")
+        .env("PATH", add_to_minimal_path(home_dir.join("does-not-exist")))
+        .assert()
+        .success();
+
+    assert!(!uninstall_script_path.exists());
 }
