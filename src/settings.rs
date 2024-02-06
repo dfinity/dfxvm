@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::path::Path;
 
-const DEFAULT_DOWNLOAD_URL_TEMPLATE: &str = "https://github.com/dfinity/sdk/releases/download/{{version}}/dfx-{{version}}-{{arch}}-{{platform}}.tar.gz";
+const DEFAULT_DOWNLOAD_URL_TEMPLATE: &str = "https://github.com/dfinity/sdk/releases/download/{{version}}/{{basename}}.{{archive-format}}";
 const DEFAULT_DFXVM_LATEST_DOWNLOAD_ROOT_URL: &str =
     "https://github.com/dfinity/dfxvm/releases/latest/download";
 const DEFAULT_MANIFEST_URL: &str = "https://sdk.dfinity.org/manifest.json";
