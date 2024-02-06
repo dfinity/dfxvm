@@ -1,10 +1,9 @@
 use crate::common::{
     file_contents,
-    file_contents::{bash_script},
+    file_contents::{bash_script, dfx_tarball},
 };
 use httptest::http::{response, Response};
 use semver::Version;
-use crate::common::file_contents::dfx_tarball;
 
 #[derive(Clone)]
 pub struct ReleaseAsset {
@@ -55,10 +54,10 @@ impl ReleaseAsset {
 
     pub fn dfx_tarball_basename() -> &'static str {
         #[cfg(target_os = "macos")]
-            let filename = "dfx-x86_64-apple-darwin";
+        let basename = "dfx-x86_64-apple-darwin";
         #[cfg(target_os = "linux")]
-            let filename = "dfx-x86_64-unknown-linux-gnu";
-        filename
+        let basename = "dfx-x86_64-unknown-linux-gnu";
+        basename
     }
 
     pub fn dfx_tarball_filename() -> String {
@@ -69,11 +68,11 @@ impl ReleaseAsset {
 
     pub fn dfxvm_tarball_basename() -> String {
         #[cfg(target_arch = "aarch64")]
-            let arch_and_os = "aarch64-apple-darwin";
+        let arch_and_os = "aarch64-apple-darwin";
         #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
-            let arch_and_os = "x86_64-apple-darwin";
+        let arch_and_os = "x86_64-apple-darwin";
         #[cfg(target_os = "linux")]
-            let arch_and_os = "x86_64-unknown-linux-gnu";
+        let arch_and_os = "x86_64-unknown-linux-gnu";
 
         format!("dfxvm-{}", arch_and_os)
     }

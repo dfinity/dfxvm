@@ -33,7 +33,7 @@ pub fn manifest_json(latest: &str) -> String {
             "0.5.2"
         ]
     })
-        .to_string()
+    .to_string()
 }
 
 pub fn dist_manifest_json(latest: &str) -> String {
@@ -45,18 +45,19 @@ pub fn dist_manifest_json(latest: &str) -> String {
             }
         ]
     })
-        .to_string()
+    .to_string()
 }
 
 pub fn dfx_tarball(contents: &[u8]) -> Vec<u8> {
     let dirname = ReleaseAsset::dfx_tarball_basename();
     let include_docs = false;
+
     tool_tarball("dfx", dirname, contents, include_docs)
 }
 
 pub fn dfxvm_tarball(contents: &[u8]) -> Vec<u8> {
-    let include_docs = true;
     let dirname = ReleaseAsset::dfxvm_tarball_basename();
+    let include_docs = true;
 
     tool_tarball("dfxvm", &dirname, contents, include_docs)
 }

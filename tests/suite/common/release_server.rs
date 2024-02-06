@@ -63,12 +63,12 @@ impl ReleaseServer {
                 "GET",
                 "/dfxvm-latest-download-root/dist-manifest.json",
             ))
-                .respond_with(
-                    response::Builder::new()
-                        .status(200)
-                        .body(contents.as_bytes().to_vec())
-                        .unwrap(),
-                ),
+            .respond_with(
+                response::Builder::new()
+                    .status(200)
+                    .body(contents.as_bytes().to_vec())
+                    .unwrap(),
+            ),
         );
     }
 }
