@@ -76,13 +76,7 @@ pub fn tool_tarball(tool: &str, dirname: &str, contents: &[u8], include_docs: bo
 
     if include_docs {
         append_file(&mut tar, 0o644, dirname, "README.md", b"the readme\n");
-        append_file(
-            &mut tar,
-            0o644,
-            dirname,
-            "CHANGELOG.md",
-            b"the changelog\n",
-        );
+        append_file(&mut tar, 0o644, dirname, "CHANGELOG.md", b"the changelog\n");
     }
     append_file(&mut tar, 0o644, dirname, "LICENSE", b"the license\n");
     append_file(&mut tar, 0o755, dirname, tool, contents);

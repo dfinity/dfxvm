@@ -107,7 +107,11 @@ fn format_tarball_basename() -> &'static str {
     basename
 }
 
-fn format_tarball_url(version: &Version, basename: &str, settings: &Settings) -> Result<Url, url::ParseError> {
+fn format_tarball_url(
+    version: &Version,
+    basename: &str,
+    settings: &Settings,
+) -> Result<Url, url::ParseError> {
     let url_template = settings.download_url_template();
     let url = url_template
         .replace("{{version}}", &version.to_string())
