@@ -416,3 +416,62 @@ fn ignores_empty_version_from_environment() {
             .stdout("this is the zero point two point one dfx executable\n");
     }
 }
+
+#[test]
+fn dfx_upgrade_disallowed() {
+    let home_dir = TempHomeDir::new();
+    home_dir.settings().write_default_version("0.4.4");
+
+    // make sure it really reports what dfx says it is:
+    home_dir.create_executable_dfx_script(
+        "0.4.4",
+        "if [ \"$1\" = \"--version\" ]; then echo 'dfx 0.8.7'; else echo 'hi this is dfx'; fi",
+    );
+
+    // upgrade command is disallowed
+    home_dir
+        .dfx()
+        .arg("-v")
+        .arg("upgrade")
+        .assert()
+        .failure()
+        .stderr(contains(
+            "The command `dfx upgrade` doesn't work with dfxvm",
+        ))
+        .stderr(contains("dfxvm update"));
+
+    // parameter value doesn't hide it
+    home_dir
+        .dfx()
+        .arg("--identity")
+        .arg("me")
+        .arg("upgrade")
+        .assert()
+        .failure()
+        .stderr(contains(
+            "The command `dfx upgrade` doesn't work with dfxvm",
+        ))
+        .stderr(contains("dfxvm update"));
+
+    // doesn't block on known parameters whose value technically could be "upgrade"
+    home_dir
+        .dfx()
+        .arg("--identity")
+        .arg("upgrade")
+        .arg("--logfile")
+        .arg("upgrade")
+        .arg("--network")
+        .arg("upgrade")
+        .arg("cache")
+        .arg("show")
+        .assert()
+        .success();
+
+    // upgrade subcommands (could be an extension) are allowed
+    home_dir
+        .dfx()
+        .arg("something")
+        .arg("upgrade")
+        .assert()
+        .success();
+}

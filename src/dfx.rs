@@ -19,6 +19,12 @@ use std::path::PathBuf;
 use std::process::ExitCode;
 
 pub fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, dfx::Error> {
+    if trying_to_call_dfx_upgrade(args) {
+        err!("The command `dfx upgrade` doesn't work with dfxvm.");
+        err!("To upgrade dfx, run:");
+        err!("    {}", style_command("dfxvm update"));
+        return Ok(ExitCode::FAILURE);
+    }
     cleanup_self_updater(locations)?;
     let Some((version, args)) = get_dfx_version_and_command_args(args, locations)? else {
         err!("Unable to determine which dfx version to call. To set a default version, run:");
@@ -40,6 +46,37 @@ pub fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, dfx::E
         command,
         source: err,
     })
+}
+
+fn trying_to_call_dfx_upgrade(args: &[OsString]) -> bool {
+    let mut iter = args.iter().peekable();
+
+    // Skip the first argument (binary name)
+    iter.next();
+
+    let mut skip_next = false;
+
+    while let Some(arg) = iter.next() {
+        if skip_next {
+            // Skip the next argument if it's a parameter value
+            skip_next = false;
+            continue;
+        }
+
+        // Convert the argument to a string
+        if let Some(arg_str) = arg.to_str() {
+            if arg_str.starts_with("-") {
+                if arg_str == "--identity" || arg_str == "--network" || arg_str == "--logfile" {
+                    // The next parameter is an argument, so skip it
+                    skip_next = true;
+                }
+            } else {
+                // Check if the first non-parameter "word" is "upgrade"
+                return arg_str == "upgrade";
+            }
+        }
+    }
+    false
 }
 
 fn get_dfx_version_and_command_args<'args>(
