@@ -5,7 +5,6 @@ pub mod project_dirs;
 mod release_asset;
 mod release_server;
 mod settings;
-mod target;
 mod temp_home_dir;
 
 pub use release_asset::ReleaseAsset;

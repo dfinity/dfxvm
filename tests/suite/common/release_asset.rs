@@ -1,7 +1,6 @@
 use crate::common::{
     file_contents,
     file_contents::{bash_script},
-    target,
 };
 use httptest::http::{response, Response};
 use semver::Version;
