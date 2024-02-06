@@ -10,9 +10,8 @@ pub struct ReleaseServer {
 impl ReleaseServer {
     pub fn new(home_dir: &TempHomeDir) -> Self {
         let server = Server::run();
-        let download_url_template = server.url_str(
-            "/any/arbitrary/path/{{version}}/dfx-{{version}}-{{arch}}-{{platform}}.tar.gz",
-        );
+        let download_url_template =
+            server.url_str("/any/arbitrary/path/{{version}}/{{basename}}.{{archive-format}}");
         home_dir
             .settings()
             .write_download_url_template(&download_url_template);

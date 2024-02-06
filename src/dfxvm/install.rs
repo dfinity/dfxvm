@@ -55,7 +55,8 @@ pub async fn install(version: Version, locations: &Locations) -> Result<(), Inst
 
     extract_binary(&downloaded_tarball_path, install_dir.path())?;
 
-    rename(install_dir.path(), &version_dir)?;
+    let tarball_basename = format_tarball_basename();
+    rename(&install_dir.path().join(tarball_basename), &version_dir)?;
 
     info!("installed dfx {version}");
 
@@ -67,12 +68,13 @@ async fn download_verified_tarball(
     download_dir: &Path,
     settings: &Settings,
 ) -> Result<PathBuf, DownloadVerifiedTarballError> {
-    let tarball_filename = "dfx.tar.gz";
+    let tarball_basename = format_tarball_basename();
+    let tarball_filename = format!("{tarball_basename}.tar.gz");
     let shasum_filename = format!("{tarball_filename}.sha256");
     let downloaded_tarball_path = download_dir.join(tarball_filename);
     let downloaded_shasum_path = download_dir.join(shasum_filename);
 
-    let tarball_url = format_tarball_url(version, settings)?;
+    let tarball_url = format_tarball_url(version, tarball_basename, settings)?;
     let shasum_url = Url::parse(&format!("{tarball_url}.sha256"))?;
 
     let client = Client::new();
@@ -97,18 +99,24 @@ async fn download_verified_tarball(
     Ok(downloaded_tarball_path)
 }
 
-fn format_tarball_url(version: &Version, settings: &Settings) -> Result<Url, url::ParseError> {
+fn format_tarball_basename() -> &'static str {
     #[cfg(target_os = "linux")]
-    let platform = "linux";
+    let basename = "dfx-x86_64-unknown-linux-gnu";
     #[cfg(target_os = "macos")]
-    let platform = "darwin";
-    let arch = "x86_64";
+    let basename = "dfx-x86_64-apple-darwin";
+    basename
+}
 
+fn format_tarball_url(
+    version: &Version,
+    basename: &str,
+    settings: &Settings,
+) -> Result<Url, url::ParseError> {
     let url_template = settings.download_url_template();
     let url = url_template
         .replace("{{version}}", &version.to_string())
-        .replace("{{arch}}", arch)
-        .replace("{{platform}}", platform);
+        .replace("{{basename}}", basename)
+        .replace("{{archive-format}}", "tar.gz");
     Url::parse(&url)
 }
 

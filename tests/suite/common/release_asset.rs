@@ -1,7 +1,6 @@
 use crate::common::{
     file_contents,
-    file_contents::{bash_script, binary_tar_gz},
-    target,
+    file_contents::{bash_script, dfx_tarball},
 };
 use httptest::http::{response, Response};
 use semver::Version;
@@ -19,13 +18,13 @@ impl ReleaseAsset {
     }
 
     pub fn dfx_tarball_with_dfx_contents(version: &str, executable: &[u8]) -> ReleaseAsset {
-        let filename = Self::dfx_tarball_filename(version);
+        let filename = Self::dfx_tarball_filename().to_string();
         let version = Version::parse(version).unwrap();
 
         // must match the download_url_template in ReleaseServer::new
         let url_path = format!("/any/arbitrary/path/{version}/{filename}");
 
-        let contents = binary_tar_gz("dfx", executable);
+        let contents = dfx_tarball(executable);
         ReleaseAsset {
             url_path,
             filename,
@@ -53,9 +52,18 @@ impl ReleaseAsset {
             .unwrap()
     }
 
-    pub fn dfx_tarball_filename(version: &str) -> String {
-        let platform = target::platform();
-        format!("dfx-{version}-x86_64-{platform}.tar.gz")
+    pub fn dfx_tarball_basename() -> &'static str {
+        #[cfg(target_os = "macos")]
+        let basename = "dfx-x86_64-apple-darwin";
+        #[cfg(target_os = "linux")]
+        let basename = "dfx-x86_64-unknown-linux-gnu";
+        basename
+    }
+
+    pub fn dfx_tarball_filename() -> String {
+        let basename = Self::dfx_tarball_basename();
+        let archive_format = "tar.gz";
+        format!("{basename}.{archive_format}")
     }
 
     pub fn dfxvm_tarball_basename() -> String {

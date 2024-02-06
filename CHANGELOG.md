@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - ReleaseDate
 
+- Downloads new cargo-dist style tarballs from the release page.
+- Breaking change: Variables in the download URL template are now `{{version}}`, `{{basename}}`, and `{{archive-format}}`
+
 ## [0.2.1] - 2024-02-05
 
 - Removed openssl dependencies.
