@@ -56,7 +56,7 @@ fn trying_to_call_dfx_upgrade(args: &[OsString]) -> bool {
 
     let mut skip_next = false;
 
-    while let Some(arg) = iter.next() {
+    for arg in iter {
         if skip_next {
             // Skip the next argument if it's a parameter value
             skip_next = false;
@@ -65,7 +65,7 @@ fn trying_to_call_dfx_upgrade(args: &[OsString]) -> bool {
 
         // Convert the argument to a string
         if let Some(arg_str) = arg.to_str() {
-            if arg_str.starts_with("-") {
+            if arg_str.starts_with('-') {
                 if arg_str == "--identity" || arg_str == "--network" || arg_str == "--logfile" {
                     // The next parameter is an argument, so skip it
                     skip_next = true;
