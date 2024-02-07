@@ -1,4 +1,5 @@
 use crate::dfxvm::cleanup_self_updater;
+use crate::env::prepend_to_path;
 use crate::error::dfx;
 use crate::error::dfx::Error::Exec;
 use crate::error::dfx::{
@@ -41,6 +42,8 @@ pub fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, dfx::E
 
     let mut command = std::process::Command::new(bin_path);
     command.args(args);
+    command.env("DFX_VERSION", version.to_string());
+    command.env("PATH", prepend_to_path(&locations.version_dir(&version)));
     let err = command.exec();
     Err(Exec {
         command,
