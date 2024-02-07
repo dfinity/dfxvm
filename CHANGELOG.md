@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Downloads new cargo-dist style tarballs from the release page.
 - Breaking change: Variables in the download URL template are now `{{version}}`, `{{basename}}`, and `{{archive-format}}`
+- dfx mode disallows the `dfx upgrade` command, which would replace the versioned dfx executable.
 
 ## [0.2.1] - 2024-02-05
 
