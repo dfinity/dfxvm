@@ -9,7 +9,7 @@ pub const PATH_ENV_SEPARATOR: char = ';';
 #[cfg(unix)]
 pub const PATH_ENV_SEPARATOR: char = ':';
 
-pub fn add_to_minimal_path<A: AsRef<Path>>(a: A) -> String {
+pub fn prepend_to_minimal_path<A: AsRef<Path>>(a: A) -> String {
     format!(
         "{}{}{}",
         a.as_ref().to_str().unwrap(),

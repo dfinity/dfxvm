@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - ReleaseDate
 
+- Fixed: sets DFX_VERSION when proxying to dfx, so that `dfx +version <command>` overrides any version specified in dfx.json.
+- Fixed: prepends the dfx version bin directory to the PATH when proxying to dfx.
+
 ## [0.3.0] - 2024-02-07
 
 - Downloads new cargo-dist style tarballs from the release page.

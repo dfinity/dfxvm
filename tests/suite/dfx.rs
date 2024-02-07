@@ -1,3 +1,4 @@
+use crate::common::paths::prepend_to_minimal_path;
 use crate::common::TempHomeDir;
 use assert_cmd::prelude::*;
 use predicates::str::*;
@@ -474,4 +475,27 @@ fn dfx_upgrade_disallowed() {
         .arg("upgrade")
         .assert()
         .success();
+}
+
+#[test]
+fn env_vars_provided() {
+    let home_dir = TempHomeDir::new();
+    home_dir
+        .create_executable_dfx_script("0.7.9", "echo DFX_VERSION: $DFX_VERSION\necho PATH: $PATH");
+    let dfx_version_dir = home_dir.dfx_version_dir("0.7.9");
+
+    let mut cmd = home_dir.dfx();
+    cmd.arg("+0.7.9");
+
+    let tempdir = home_dir.new_project_temp_dir();
+    let dfx_json = tempdir.path().join("dfx.json");
+    std::fs::write(dfx_json, r#"{"dfx": "0.6.2"}"#).unwrap();
+    cmd.current_dir(&tempdir);
+
+    let expected_path = prepend_to_minimal_path(dfx_version_dir);
+
+    cmd.assert()
+        .success()
+        .stdout(contains("DFX_VERSION: 0.7.9\n"))
+        .stdout(contains(format!("PATH: {}\n", expected_path)));
 }

@@ -1,5 +1,5 @@
 use crate::common::{
-    file_contents::manifest_json, paths::add_to_minimal_path, ReleaseAsset, ReleaseServer,
+    file_contents::manifest_json, paths::prepend_to_minimal_path, ReleaseAsset, ReleaseServer,
     TempHomeDir,
 };
 use assert_cmd::prelude::*;
@@ -755,7 +755,7 @@ fn deletes_dfx_on_path() {
     home_dir
         .dfxvm_init()
         .arg("--yes")
-        .env("PATH", add_to_minimal_path(&another_bin_dir))
+        .env("PATH", prepend_to_minimal_path(&another_bin_dir))
         .assert()
         .success()
         .stderr(is_match("deleted:.*another-bin-dir/dfx").unwrap());
@@ -779,7 +779,10 @@ fn does_not_delete_dfx_proxy() {
     home_dir
         .dfxvm_init()
         .arg("--yes")
-        .env("PATH", add_to_minimal_path(home_dir.installed_bin_dir()))
+        .env(
+            "PATH",
+            prepend_to_minimal_path(home_dir.installed_bin_dir()),
+        )
         .assert()
         .success()
         .stderr(contains("deleted:").not());
@@ -799,7 +802,10 @@ fn copes_with_nonexistent_dir_on_path() {
     home_dir
         .dfxvm_init()
         .arg("--yes")
-        .env("PATH", add_to_minimal_path(home_dir.join("does-not-exist")))
+        .env(
+            "PATH",
+            prepend_to_minimal_path(home_dir.join("does-not-exist")),
+        )
         .assert()
         .success();
 }
@@ -821,7 +827,10 @@ fn removes_dfx_uninstall_script() {
     home_dir
         .dfxvm_init()
         .arg("--yes")
-        .env("PATH", add_to_minimal_path(home_dir.join("does-not-exist")))
+        .env(
+            "PATH",
+            prepend_to_minimal_path(home_dir.join("does-not-exist")),
+        )
         .assert()
         .success();
 

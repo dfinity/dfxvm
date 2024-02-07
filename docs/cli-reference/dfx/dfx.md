@@ -69,3 +69,9 @@ To configure the default dfx version, use the `dfxvm default` command:
 ```bash
 dfxvm default 0.15.1
 ```
+
+## Environment Variables
+
+When proxying to dfx, dfxvm alters the environment in two ways:
+- Sets `DFX_VERSION` to the version of dfx being used.
+- Prepends the bin directory for the dfx version to `PATH`.
