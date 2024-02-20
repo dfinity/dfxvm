@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - ReleaseDate
 
+## [1.0.0] - 2024-02-20
+
 ## [0.3.1] - 2024-02-07
 
 - Fixed: sets DFX_VERSION when proxying to dfx, so that `dfx +version <command>` overrides any version specified in dfx.json.
@@ -54,7 +56,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - does not yet clean up previously-installed dfx versions.
 
 <!-- next-url -->
-[Unreleased]: https://github.com/dfinity/dfxvm/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/dfinity/dfxvm/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/dfinity/dfxvm/compare/v0.3.1...v1.0.0
 [0.3.1]: https://github.com/dfinity/dfxvm/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/dfinity/dfxvm/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/dfinity/dfxvm/compare/v0.2.0...v0.2.1
