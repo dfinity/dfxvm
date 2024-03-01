@@ -5,7 +5,7 @@ to easily switch between different versions.
 
 ## Documentation
 
-See the [command-line reference][cli-reference] for
+See the [command-line reference](https://internetcomputer.org/docs/current/developer-docs/developer-tools/cli-tools/dfxvm/docs/cli-reference/dfxvm/dfxvm-install) for
 documentation on using dfxvm.
 
 ## Installation
