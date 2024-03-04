@@ -10,18 +10,17 @@ documentation on using dfxvm.
 
 ## Installation
 
-You can install dfxvm via `curl`.  The URLs below are temporary,
-for use during initial development.
+You can install dfxvm via `curl`.
 
 ``` bash
-sh -ci "$(curl -fsSL https://raw.githubusercontent.com/dfinity/sdk/dfxvm-install-script/install.sh)"
+sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
 ```
 
 You will have an opportunity to select the version,
 but you can also specify it on the command line:
 
 ``` bash
-DFX_VERSION=0.15.1 sh -ci "$(curl -fsSL https://raw.githubusercontent.com/dfinity/sdk/dfxvm-install-script/install.sh)"
+DFX_VERSION=0.15.1 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
 ```
 
 ## Contribution
