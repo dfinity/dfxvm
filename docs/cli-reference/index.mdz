@@ -1,0 +1,31 @@
+import { MarkdownChipRow } from "/src/components/Chip/MarkdownChipRow";
+
+# Command-line reference
+
+<MarkdownChipRow labels={["Reference"]} />
+
+The dfxvm binary is a chimera, changing its behavior based on
+the name of the binary.
+
+When run as `dfx`, it determines which version of dfx to use and then
+dispatches execution to it, passing through all command-line arguments.
+
+When run as `dfxvm`, it provides commands for managing dfx versions
+and for updating itself.
+
+When run as `dfxvm-init`, it performs one-time installation tasks.
+
+For more information, see the documentation
+for individual commands:
+
+- [dfx](dfx/dfx.mdx)
+- [dfxvm](dfxvm/dfxvm.mdx)
+  - [dfxvm default](dfxvm/dfxvm-default.mdx)
+  - [dfxvm install](dfxvm/dfxvm-install.mdx)
+  - [dfxvm list](dfxvm/dfxvm-list.mdx)
+  - dfxvm self
+    - [dfxvm self uninstall](dfxvm/dfxvm-self-uninstall.mdx)
+    - [dfxvm self update](dfxvm/dfxvm-self-update.mdx)
+  - [dfxvm uninstall](dfxvm/dfxvm-uninstall.mdx)
+  - [dfxvm update](dfxvm/dfxvm-update.mdx)
+- [dfxvm-init](dfxvm-init/dfxvm-init.mdx)
