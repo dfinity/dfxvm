@@ -44,7 +44,15 @@ pub struct DefaultOpts {
 
 /// List installed versions of dfx
 #[derive(Parser)]
-pub struct ListOpts {}
+pub struct ListOpts {
+    /// Specifies to list the available remote versions.
+    #[arg(long)]
+    pub remote: bool,
+
+    /// Specifies the number of remote versions to be listed, in reverse chronological order.
+    #[arg(long, default_value_t = 10, requires("remote"))]
+    pub number: usize,
+}
 
 /// Uninstall a version of dfx
 #[derive(Parser)]
@@ -89,7 +97,7 @@ pub async fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, 
     match cli.command {
         Command::Default(opts) => default(opts.version, locations).await?,
         Command::Install(opts) => install(opts.version, locations).await?,
-        Command::List(_opts) => list(locations)?,
+        Command::List(opts) => list(opts, locations).await?,
         Command::SelfCmd(opts) => match opts.command {
             SelfCommand::Update(_opts) => self_update(locations).await?,
             SelfCommand::Uninstall(opts) => self_uninstall(opts.yes, locations)?,

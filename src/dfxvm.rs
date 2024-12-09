@@ -2,6 +2,7 @@ mod cli;
 mod default;
 mod install;
 mod list;
+mod manifest;
 mod self_uninstall;
 mod self_update;
 mod uninstall;
