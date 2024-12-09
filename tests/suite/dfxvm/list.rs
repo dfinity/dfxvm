@@ -1,5 +1,7 @@
-use crate::common::TempHomeDir;
+use crate::common::file_contents::manifest_json;
+use crate::common::{ReleaseServer, TempHomeDir};
 use assert_cmd::prelude::*;
+use predicates::str::*;
 use std::fs::create_dir_all;
 
 #[test]
@@ -86,4 +88,23 @@ fn ignores_non_versions() {
         .assert()
         .success()
         .stdout("0.3.2\n0.7.1\n0.14.2\n0.15.0-beta.1\n");
+}
+
+#[test]
+fn remote_versions() {
+    let home_dir = TempHomeDir::new();
+    let server = ReleaseServer::new(&home_dir);
+
+    server.expect_get_manifest(&manifest_json("0.14.6"));
+
+    home_dir
+        .dfxvm()
+        .arg("list")
+        .arg("--remote")
+        .assert()
+        .success()
+        .stderr(is_match("info: fetching http://.*/manifest.json").unwrap())
+        .stdout(contains("Available versions:"))
+        .stdout(contains("0.5.2"))
+        .stdout(contains("0.5.0"));
 }
