@@ -10,20 +10,17 @@ use semver::Version;
 
 pub async fn list(opts: ListOpts, locations: &Locations) -> Result<(), ListError> {
     let settings = Settings::load_or_default(&locations.settings_path())?;
-    if opts.remote {
+    if opts.available {
         let url = Url::parse(&settings.manifest_url())?;
 
         info!("fetching {url}");
         let manifest = fetch_json::<Manifest>(&url).await?;
 
-        if manifest.versions.is_empty() {
-            println!("No versions available.");
-        } else {
-            println!("Available versions:");
-            let count = std::cmp::min(opts.number, manifest.versions.len());
+        if !manifest.versions.is_empty() {
+            let count = std::cmp::min(opts.limit, manifest.versions.len());
             let versions = manifest.versions.iter().rev().take(count);
             for version in versions {
-                println!("  {}", version);
+                println!("{}", version);
             }
         }
     } else {

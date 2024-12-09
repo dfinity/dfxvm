@@ -100,11 +100,10 @@ fn remote_versions() {
     home_dir
         .dfxvm()
         .arg("list")
-        .arg("--remote")
+        .arg("--available")
         .assert()
         .success()
         .stderr(is_match("info: fetching http://.*/manifest.json").unwrap())
-        .stdout(contains("Available versions:"))
         .stdout(contains("0.5.2"))
         .stdout(contains("0.5.0"));
 }

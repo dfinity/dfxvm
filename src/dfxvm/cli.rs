@@ -42,16 +42,16 @@ pub struct DefaultOpts {
     version: Option<Version>,
 }
 
-/// List installed versions of dfx
+/// List installed or remote available versions of dfx
 #[derive(Parser)]
 pub struct ListOpts {
-    /// Specifies to list the available remote versions.
+    /// Specifies to list the remote available versions.
     #[arg(long)]
-    pub remote: bool,
+    pub available: bool,
 
     /// Specifies the number of remote versions to be listed, in reverse chronological order.
-    #[arg(long, default_value_t = 10, requires("remote"))]
-    pub number: usize,
+    #[arg(long, default_value_t = 10, requires("available"))]
+    pub limit: usize,
 }
 
 /// Uninstall a version of dfx
