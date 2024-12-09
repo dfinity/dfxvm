@@ -23,7 +23,7 @@ pub async fn list(opts: ListOpts, locations: &Locations) -> Result<(), ListError
             let count = std::cmp::min(opts.number, manifest.versions.len());
             let versions = manifest.versions.iter().rev().take(count);
             for version in versions {
-                println!("  {}", version.to_string());
+                println!("  {}", version);
             }
         }
     } else {
