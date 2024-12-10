@@ -104,6 +104,26 @@ fn remote_versions() {
         .assert()
         .success()
         .stderr(is_match("info: fetching http://.*/manifest.json").unwrap())
-        .stdout(contains("0.5.2"))
-        .stdout(contains("0.5.0"));
+        .stdout(contains("0.5.2").count(1))
+        .stdout(contains("0.5.0").count(1));
+}
+
+#[test]
+fn remote_versions_with_limit() {
+    let home_dir = TempHomeDir::new();
+    let server = ReleaseServer::new(&home_dir);
+
+    server.expect_get_manifest(&manifest_json("0.14.6"));
+
+    home_dir
+        .dfxvm()
+        .arg("list")
+        .arg("--available")
+        .arg("--limit")
+        .arg("1")
+        .assert()
+        .success()
+        .stderr(is_match("info: fetching http://.*/manifest.json").unwrap())
+        .stdout(contains("0.5.2").count(1))
+        .stdout(contains("0.5.0").count(0));
 }

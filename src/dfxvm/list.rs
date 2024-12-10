@@ -16,12 +16,10 @@ pub async fn list(opts: ListOpts, locations: &Locations) -> Result<(), ListError
         info!("fetching {url}");
         let manifest = fetch_json::<Manifest>(&url).await?;
 
-        if !manifest.versions.is_empty() {
-            let count = std::cmp::min(opts.limit, manifest.versions.len());
-            let versions = manifest.versions.iter().rev().take(count);
-            for version in versions {
-                println!("{}", version);
-            }
+        let count = std::cmp::min(opts.limit, manifest.versions.len());
+        let versions = manifest.versions.iter().rev().take(count);
+        for version in versions {
+            println!("{}", version);
         }
     } else {
         let default_version = settings.default_version;

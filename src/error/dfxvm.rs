@@ -46,7 +46,7 @@ pub enum Error {
 
 #[derive(Error, Debug)]
 pub enum ListError {
-    #[error("failed to fetch versions")]
+    #[error(transparent)]
     FetchVersions(#[from] FetchJsonDocError),
 
     #[error(transparent)]
