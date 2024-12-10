@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - ReleaseDate
 
 - `dfxvm --list` now supports listing the available dfx versions.
-  - `--available`: Specifies to list the available versions.
-  - `--limit`: Specifies the number of available versions to be listed in reverse chronological order, with default value `10`.
+  - `--available`: List the available versions.
+  - `--limit`: The maximum number of available versions to list in reverse chronological order, with default value `10`.
 
 ## [1.0.0] - 2024-02-20
 

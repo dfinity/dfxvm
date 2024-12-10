@@ -45,11 +45,11 @@ pub struct DefaultOpts {
 /// List installed or available versions of dfx
 #[derive(Parser)]
 pub struct ListOpts {
-    /// Specifies to list the available versions.
+    /// List the available versions.
     #[arg(long)]
     pub available: bool,
 
-    /// Specifies the number of available versions to be listed, in reverse chronological order.
+    /// The maximum number of available versions to list, in reverse chronological order.
     #[arg(long, default_value_t = 10, requires("available"))]
     pub limit: usize,
 }
