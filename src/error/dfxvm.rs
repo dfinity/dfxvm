@@ -47,7 +47,13 @@ pub enum Error {
 #[derive(Error, Debug)]
 pub enum ListError {
     #[error(transparent)]
+    FetchVersions(#[from] FetchJsonDocError),
+
+    #[error(transparent)]
     LoadJsonFile(#[from] LoadJsonFileError),
+
+    #[error("failed to parse manifest url")]
+    ParseManifestUrl(#[from] url::ParseError),
 
     #[error("failed to read directory {path}")]
     ReadDir {
