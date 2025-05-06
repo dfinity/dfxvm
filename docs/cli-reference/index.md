@@ -1,8 +1,4 @@
-import { MarkdownChipRow } from "/src/components/Chip/MarkdownChipRow";
-
 # Command-line reference
-
-<MarkdownChipRow labels={["Reference"]} />
 
 The dfxvm binary is a chimera, changing its behavior based on
 the name of the binary.
