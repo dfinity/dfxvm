@@ -1,82 +1,63 @@
-import { MarkdownChipRow } from "/src/components/Chip/MarkdownChipRow";
+# Determining `dfx` version
 
-# dfx
+When invoked as `dfx`, `dfxvm` determines which version of `dfx` to use for execution by checking these criteria in order:
 
-<MarkdownChipRow labels={["Reference"]} />
+1. `+<version>` parameter from command line.
+2. `DFX_VERSION` environment variable.
+3. `dfx` setting in the current project's `dfx.json`.
+4. `default_version` in `$HOME/.config/dfx/version-manager.json`.
 
+#### 1. Command line
 
-When invoked as `dfx`, `dfxvm` determines which version of dfx to use
-and dispatches execution to it.
-
-## dfx version determination
-
-`dfxvm` determines which version of dfx to use by checking these criteria
-in order:
-
-1. `+<version>` parameter from command line
-2. `DFX_VERSION` environment variable
-3. `dfx` in the current project's `dfx.json`
-4. `default_version` in `$HOME/.config/dfx/version-manager.json`
-
-### Command Line
-
-You can specify the version of dfx to use on the command line by passing
-`+<version>` as the first parameter. For example, the following will deploy
-using dfx 0.15.0:
+You can specify the version of `dfx` on the command line by passing `+<version>` as the first parameter. For example, the following will deploy using `dfx v0.26.0`:
 
 ```bash
-dfx +0.15.0 deploy
+dfx +0.26.0 deploy
 ```
 
-### DFX_VERSION environment variable
+#### 2. `DFX_VERSION` environment variable
 
-You can specify the version of dfx to use by setting the `DFX_VERSION`
-environment variable.  For example, the following will start the replica using
-dfx 0.15.0:
+You can specify the version of `dfx` by setting the `DFX_VERSION` environment variable. For example, the following will start the local developer environment using `dfx v0.26.0`:
 
 ```bash
-DFX_VERSION=0.15.0 dfx start --clean --background
+DFX_VERSION=0.26.0 dfx start --clean --background
 ```
 
-### dfx field in the current project's dfx.json
+#### 3. `dfx` field in the current project's `dfx.json`
 
-If running dfxvm as dfx in a dfx project, and the project's dfx.json contains a
-top-level field "dfx", then dfxvm will use the version specified in that field.
+A project's `dfx.json` file can contain a top-level field "dfx". If specified, then `dfxvm` will use that version.
 
-Like dfx, dfxvm looks for dfx.json in the current directory and then in
-parent directories until it finds one or reaches the root directory.
+Like `dfx`, `dfxvm` looks for `dfx.json` in the current directory and then in parent directories until it finds one or reaches the root directory.
 
 For example:
 
 ```json
 {
-  "dfx": "0.14.4",
+  "dfx": "0.26.1",
   "canisters": {  }
 }
 ```
 
-If the above dfx.json were in the current directory or any parent directory,
-then any dfx command would use dfx 0.14.4.
+If the above `dfx.json` were in the current directory or any parent directory, then any `dfx` command would use `dfx v0.26.1`.
 
-### default_version in $HOME/.config/dfx/version-manager.json
+#### 4. `default_version` in `$HOME/.config/dfx/version-manager.json`
 
-If none of the above criteria are met, then dfxvm will use the version specified
-in `$HOME/.config/dfx/version-manager.json`. For example:
+If none of the above criteria are met, then `dfxvm` will use the version specified in `$HOME/.config/dfx/version-manager.json`. For example:
 
 ```json
 {
-  "default_version": "0.15.0"
+  "default_version": "0.26.0"
 }
 ```
 
 To configure the default dfx version, use the `dfxvm default` command:
 
 ```bash
-dfxvm default 0.15.1
+dfxvm default 0.26.1
 ```
 
-## Environment Variables
+## Environment variables
 
-When proxying to dfx, dfxvm alters the environment in two ways:
-- Sets `DFX_VERSION` to the version of dfx being used.
-- Prepends the bin directory for the dfx version to `PATH`.
+When proxying to `dfx`, `dfxvm` alters the environment in two ways:
+- Sets `DFX_VERSION` to the version of `dfx` being used.
+- Prepends the `bin` directory for the `dfx` version to `PATH`.
