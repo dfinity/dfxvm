@@ -102,8 +102,10 @@ async fn download_verified_tarball(
 fn format_tarball_basename() -> &'static str {
     #[cfg(target_os = "linux")]
     let basename = "dfx-x86_64-unknown-linux-gnu";
-    #[cfg(target_os = "macos")]
+    #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
     let basename = "dfx-x86_64-apple-darwin";
+    #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+    let basename = "dfx-aarch64-apple-darwin";
     basename
 }
 
