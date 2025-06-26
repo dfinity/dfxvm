@@ -9,7 +9,6 @@ use std::path::{Path, PathBuf};
 // Derived from append_file() in https://github.com/rust-lang/rustup/blob/master/src/utils/raw.rs
 pub fn append_to_file(dest: &Path, line: &str) -> Result<(), AppendToFileError> {
     let mut file = std::fs::OpenOptions::new()
-        .write(true)
         .append(true)
         .create(true)
         .open(dest)
