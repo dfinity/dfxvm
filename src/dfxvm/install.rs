@@ -55,7 +55,7 @@ pub async fn install(version: Version, locations: &Locations) -> Result<(), Inst
 
     extract_binary(&downloaded_tarball_path, install_dir.path())?;
 
-    let tarball_basename = format_tarball_basename();
+    let tarball_basename = format_tarball_basename(&version);
     rename(&install_dir.path().join(tarball_basename), &version_dir)?;
 
     info!("installed dfx {version}");
@@ -68,7 +68,7 @@ async fn download_verified_tarball(
     download_dir: &Path,
     settings: &Settings,
 ) -> Result<PathBuf, DownloadVerifiedTarballError> {
-    let tarball_basename = format_tarball_basename();
+    let tarball_basename = format_tarball_basename(version);
     let tarball_filename = format!("{tarball_basename}.tar.gz");
     let shasum_filename = format!("{tarball_filename}.sha256");
     let downloaded_tarball_path = download_dir.join(tarball_filename);
@@ -99,12 +99,21 @@ async fn download_verified_tarball(
     Ok(downloaded_tarball_path)
 }
 
-fn format_tarball_basename() -> &'static str {
+#[allow(unused_variables)]
+fn format_tarball_basename(version: &Version) -> &'static str {
     #[cfg(target_os = "linux")]
-    let basename = "dfx-x86_64-unknown-linux-gnu";
-    #[cfg(target_os = "macos")]
-    let basename = "dfx-x86_64-apple-darwin";
-    basename
+    return "dfx-x86_64-unknown-linux-gnu";
+    #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
+    return "dfx-x86_64-apple-darwin";
+    #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+    {
+        // This is the first version that supports aarch64-apple-darwin.
+        let aarch64_apple_darwin_version = Version::parse("0.28.0-beta.1").unwrap();
+        if version >= &aarch64_apple_darwin_version {
+            return "dfx-aarch64-apple-darwin";
+        }
+        return "dfx-x86_64-apple-darwin";
+    }
 }
 
 fn format_tarball_url(

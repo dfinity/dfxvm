@@ -16,6 +16,8 @@ concurrency:
 env:
   # When getting Rust dependencies, retry on network error:
   CARGO_NET_RETRY: 10
+  # Use the stable toolchain for the audit
+  RUSTUP_TOOLCHAIN: stable
 
 jobs:
   test:
