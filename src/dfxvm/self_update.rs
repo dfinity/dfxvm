@@ -119,8 +119,7 @@ fn extract_binary(
     Archive::new(tar)
         .entries()
         .map_err(ReadArchiveEntries)?
-        .enumerate()
-        .filter_map(|(_i, entry)| entry.ok())
+        .filter_map(|entry| entry.ok())
         .find(|entry| {
             entry
                 .header()

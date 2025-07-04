@@ -9,9 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - ReleaseDate
 
+## [1.0.1] - 2025-07-02
+
 - `dfxvm --list` now supports listing the available dfx versions.
   - `--available`: List the available versions.
   - `--limit`: The maximum number of available versions to list in reverse chronological order, with default value `10`.
+
+- `dfxvm` now supports installing dfx with the aarch64-Darwin binaries.
 
 ## [1.0.0] - 2024-02-20
 
@@ -60,7 +64,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - does not yet clean up previously-installed dfx versions.
 
 <!-- next-url -->
-[Unreleased]: https://github.com/dfinity/dfxvm/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/dfinity/dfxvm/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/dfinity/dfxvm/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/dfinity/dfxvm/compare/v0.3.1...v1.0.0
 [0.3.1]: https://github.com/dfinity/dfxvm/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/dfinity/dfxvm/compare/v0.2.1...v0.3.0
