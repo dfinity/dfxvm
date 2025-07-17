@@ -65,11 +65,13 @@ pub fn cleanup_self_updater(locations: &Locations) -> Result<(), CleanupSelfUpda
 }
 
 fn format_tarball_url(settings: &Settings) -> Result<Url, FormatTarballUrlError> {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
     let architecture = "aarch64-apple-darwin";
     #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
     let architecture = "x86_64-apple-darwin";
-    #[cfg(target_os = "linux")]
+    #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
+    let architecture = "aarch64-unknown-linux-gnu";
+    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
     let architecture = "x86_64-unknown-linux-gnu";
 
     let basename = format!("dfxvm-{}", architecture);
