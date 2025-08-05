@@ -18,13 +18,13 @@ impl ReleaseAsset {
     }
 
     pub fn dfx_tarball_with_dfx_contents(version: &str, executable: &[u8]) -> ReleaseAsset {
-        let filename = Self::dfx_tarball_filename().to_string();
         let version = Version::parse(version).unwrap();
+        let filename = Self::dfx_tarball_filename(&version).to_string();
 
         // must match the download_url_template in ReleaseServer::new
         let url_path = format!("/any/arbitrary/path/{version}/{filename}");
 
-        let contents = dfx_tarball(executable);
+        let contents = dfx_tarball(&version, executable);
         ReleaseAsset {
             url_path,
             filename,
@@ -52,16 +52,27 @@ impl ReleaseAsset {
             .unwrap()
     }
 
-    pub fn dfx_tarball_basename() -> &'static str {
-        #[cfg(target_os = "macos")]
-        let basename = "dfx-x86_64-apple-darwin";
-        #[cfg(target_os = "linux")]
-        let basename = "dfx-x86_64-unknown-linux-gnu";
-        basename
+    #[allow(unused_variables)]
+    pub fn dfx_tarball_basename(version: &Version) -> &'static str {
+        #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
+        return "dfx-x86_64-apple-darwin";
+        #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+        {
+            // This is the first version that supports aarch64-apple-darwin.
+            let aarch64_apple_darwin_version = Version::parse("0.28.0-beta.1").unwrap();
+            if version >= &aarch64_apple_darwin_version {
+                return "dfx-aarch64-apple-darwin";
+            }
+            return "dfx-x86_64-apple-darwin";
+        }
+        #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+        return "dfx-x86_64-unknown-linux-gnu";
+        #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
+        return "dfx-aarch64-unknown-linux-gnu";
     }
 
-    pub fn dfx_tarball_filename() -> String {
-        let basename = Self::dfx_tarball_basename();
+    pub fn dfx_tarball_filename(version: &Version) -> String {
+        let basename = Self::dfx_tarball_basename(version);
         let archive_format = "tar.gz";
         format!("{basename}.{archive_format}")
     }

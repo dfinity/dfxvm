@@ -1,6 +1,7 @@
 use crate::common::ReleaseAsset;
 use flate2::write::GzEncoder;
 use flate2::Compression;
+use semver::Version;
 use serde_json::json;
 use sha2::{Digest, Sha256};
 use std::io::Write;
@@ -48,8 +49,8 @@ pub fn dist_manifest_json(latest: &str) -> String {
     .to_string()
 }
 
-pub fn dfx_tarball(contents: &[u8]) -> Vec<u8> {
-    let dirname = ReleaseAsset::dfx_tarball_basename();
+pub fn dfx_tarball(version: &Version, contents: &[u8]) -> Vec<u8> {
+    let dirname = ReleaseAsset::dfx_tarball_basename(version);
     let include_docs = false;
 
     tool_tarball("dfx", dirname, contents, include_docs)
