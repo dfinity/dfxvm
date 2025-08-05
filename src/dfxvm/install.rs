@@ -104,7 +104,6 @@ fn format_tarball_basename(version: &Version) -> &'static str {
     #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
     return "dfx-x86_64-unknown-linux-gnu";
     #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
-    // TODO: Check dfx version to see if it supports aarch64-unknown-linux-gnu.
     return "dfx-aarch64-unknown-linux-gnu";
     #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
     return "dfx-x86_64-apple-darwin";
