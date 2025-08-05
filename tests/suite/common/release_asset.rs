@@ -69,9 +69,9 @@ impl ReleaseAsset {
     #[allow(unused_variables)]
     pub fn dfxvm_tarball_basename() -> String {
         #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
-        return "x86_64-unknown-linux-gnu";
+        let arch_and_os = "x86_64-unknown-linux-gnu";
         #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
-        return "aarch64-unknown-linux-gnu";
+        let arch_and_os = "aarch64-unknown-linux-gnu";
         #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
         let arch_and_os = "x86_64-apple-darwin";
         #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
