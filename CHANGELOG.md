@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - ReleaseDate
 
+## [1.1.0] - 2025-08-06
+
 - `dfxvm` now has the aarch64-linux version and supports installing dfx with the aarch64-linux binaries.
 
 ## [1.0.1] - 2025-07-02
@@ -66,7 +68,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - does not yet clean up previously-installed dfx versions.
 
 <!-- next-url -->
-[Unreleased]: https://github.com/dfinity/dfxvm/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/dfinity/dfxvm/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/dfinity/dfxvm/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/dfinity/dfxvm/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/dfinity/dfxvm/compare/v0.3.1...v1.0.0
 [0.3.1]: https://github.com/dfinity/dfxvm/compare/v0.3.0...v0.3.1
