@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - ReleaseDate
 
+- `dfxvm` now has the aarch64-linux version and supports installing dfx with the aarch64-linux binaries.
+
 ## [1.0.1] - 2025-07-02
 
 - `dfxvm --list` now supports listing the available dfx versions.
