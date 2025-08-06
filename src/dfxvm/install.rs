@@ -101,8 +101,10 @@ async fn download_verified_tarball(
 
 #[allow(unused_variables)]
 fn format_tarball_basename(version: &Version) -> &'static str {
-    #[cfg(target_os = "linux")]
+    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
     return "dfx-x86_64-unknown-linux-gnu";
+    #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
+    return "dfx-aarch64-unknown-linux-gnu";
     #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
     return "dfx-x86_64-apple-darwin";
     #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
