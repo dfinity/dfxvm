@@ -79,7 +79,7 @@ jobs:
           \`\`\`bash
           git checkout main
           git pull
-          cargo dist plan
+          dist plan
           cargo release --execute
           \`\`\`
           EOF
