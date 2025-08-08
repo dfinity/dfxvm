@@ -6,10 +6,7 @@ import { MarkdownChipRow } from "/src/components/Chip/MarkdownChipRow";
 
 When invoked as `dfxvm-init`, `dfxvm` performs one-time installation tasks.
 
-By default, installs the latest version of dfx, and gives you an opportunity
-to customize the installation.
-
-## Usage
+By default, installs the latest version of dfx, and gives you an opportunity to customize the installation.
 
 ```bash
 dfxvm-init [--dfx-version <version>] [--yes]
@@ -25,19 +22,17 @@ dfxvm-init [--dfx-version <version>] [--yes]
 
 ## Examples
 
-Install dfxvm and the latest version of dfx, with an opportunity
-to customize the installation
-
 ```bash
 dfxvm-init
 ```
 
-Install dfxvm and dfx 0.14.4, with an opportunity to customize the installation
+Install `dfxvm` and `dfx 0.14.4`, with an opportunity to customize the installation:
+
 ```bash
 dfxvm-init --dfx-version 0.14.4
 ```
 
-Install dfxvm and the latest version of dfx without prompting for confirmation
+Install `dfxvm` and the latest version of `dfx` without prompting for confirmation:
 
 ```bash
 dfxvm-init --yes

@@ -4,17 +4,13 @@ import { MarkdownChipRow } from "/src/components/Chip/MarkdownChipRow";
 
 <MarkdownChipRow labels={["Reference"]} />
 
-Uninstalls a version of dfx.
-
-## Usage
+Uninstalls a specific version of `dfx`. Does not uninstall `dfxvm` itself.
 
 ```bash
 dfxvm uninstall <version>
 ```
 
-## Examples
-
-Uninstall a beta that you don't want anymore:
+## Example
 
 ```bash
 dfxvm uninstall 0.15.1-beta.0
