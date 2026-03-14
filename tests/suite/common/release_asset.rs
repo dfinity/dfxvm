@@ -63,7 +63,7 @@ impl ReleaseAsset {
             if version >= &aarch64_apple_darwin_version {
                 return "dfx-aarch64-apple-darwin";
             }
-            return "dfx-x86_64-apple-darwin";
+            "dfx-x86_64-apple-darwin"
         }
         #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
         return "dfx-x86_64-unknown-linux-gnu";

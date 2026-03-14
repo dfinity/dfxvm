@@ -114,7 +114,7 @@ fn format_tarball_basename(version: &Version) -> &'static str {
         if version >= &aarch64_apple_darwin_version {
             return "dfx-aarch64-apple-darwin";
         }
-        return "dfx-x86_64-apple-darwin";
+        "dfx-x86_64-apple-darwin"
     }
 }
 

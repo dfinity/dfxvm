@@ -3,8 +3,6 @@
 # we allow more licenses in the build-time check. all rust dependencies are statically linked,
 # so copyleft licenses like MPL which allow static linking are A-OK
 [licenses]
-default = "deny"
-
 allow = [
     "Apache-2.0",
     "Apache-2.0 WITH LLVM-exception",
@@ -15,23 +13,9 @@ allow = [
     "MIT",
     "MPL-2.0",
     "Zlib",
-    "Unicode-DFS-2016",
     "Unicode-3.0",
-]
-
-deny = [
-    "GPL-1.0",
-    "GPL-2.0",
-    "GPL-3.0",
-]
-
-exceptions = [
-    { name = "ring", allow = ["OpenSSL"] },
-]
-
-[[licenses.clarify]]
-name = "ring"
-expression = "MIT AND ISC AND OpenSSL"
-license-files = [
-    { path = "LICENSE", hash = 0xbd0eed23 }
+    # permissive data license, used by webpki-root-certs for certificate data
+    "CDLA-Permissive-2.0",
+    # OpenSSL license, used by aws-lc-sys (via aws-lc-rs -> rustls -> reqwest)
+    "OpenSSL",
 ]
