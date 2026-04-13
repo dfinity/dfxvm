@@ -24,14 +24,14 @@ jobs:
   prepare-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           fetch-depth: 0
 
       - name: Use Rust version from rust-toolchain.toml
         run: rustup show
 
-      - uses: cargo-bins/cargo-binstall@main
+      - uses: cargo-bins/cargo-binstall@6ed12bbaae779f3fd3ba1477bc9a61a2535a3bb2 # main
 
       - name: Install dependencies
         run: cargo binstall cargo-release -y
