@@ -9,7 +9,7 @@ use crate::locations::Locations;
 use console::style;
 use dialoguer::Confirm;
 use std::path::Path;
-use sysinfo::System;
+use sysinfo::{ProcessesToUpdate, System};
 
 pub fn self_uninstall(yes: bool, locations: &Locations) -> Result<(), SelfUninstallError> {
     println!();
@@ -81,7 +81,7 @@ fn killany_dfx(locations: &Locations) -> bool {
     let dfinity_cache_versions_dir = locations.dfinity_cache_versions_dir();
 
     let mut info = System::new();
-    info.refresh_processes();
+    info.refresh_processes(ProcessesToUpdate::All, true);
     let mut n = 0;
     for (pid, proc) in info.processes() {
         if let Some(exe) = proc.exe() {

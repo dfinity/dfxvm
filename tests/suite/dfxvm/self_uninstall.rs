@@ -4,6 +4,7 @@ use crate::dfxvm_init::{posix_source, FAKE_RC};
 use assert_cmd::prelude::*;
 use std::path::PathBuf;
 use std::process::Command;
+use sysinfo::ProcessesToUpdate;
 
 #[test]
 fn self_uninstall() {
@@ -117,7 +118,7 @@ fn populate_dfx_cache_version(version: &str, home_dir: &TempHomeDir, fake_dfx: &
 
 fn all_process_exe_paths() -> Vec<PathBuf> {
     let mut info = sysinfo::System::new();
-    info.refresh_processes();
+    info.refresh_processes(ProcessesToUpdate::All, true);
     info.processes()
         .iter()
         .filter_map(|(_pid, proc)| proc.exe().map(|p| p.to_path_buf()))

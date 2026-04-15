@@ -133,9 +133,13 @@ fn format_tarball_url(
 
 fn extract_binary(tar_gz_path: &Path, dest: &Path) -> Result<(), ExtractArchiveError> {
     let spinner = ProgressBar::new_spinner();
-    spinner.set_style(ProgressStyle::default_spinner().template("{msg} {spinner}"));
+    spinner.set_style(
+        ProgressStyle::default_spinner()
+            .template("{msg} {spinner}")
+            .expect("valid template"),
+    );
     spinner.set_message("extracting archive...");
-    spinner.enable_steady_tick(100);
+    spinner.enable_steady_tick(std::time::Duration::from_millis(100));
 
     let tar_gz = open_file(tar_gz_path)?;
     let tar = GzDecoder::new(tar_gz);

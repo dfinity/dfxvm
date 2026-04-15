@@ -66,9 +66,12 @@ async fn attempt_download_file(
     info!("downloading {}", url);
 
     let pb = ProgressBar::new(0);
-    pb.set_style(ProgressStyle::default_bar()
-        .template("{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({bytes_per_sec}, {eta})")
-        .progress_chars("#>-"));
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template("{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({bytes_per_sec}, {eta})")
+            .expect("valid template")
+            .progress_chars("#>-"),
+    );
 
     let res = client
         .get(url.clone())
