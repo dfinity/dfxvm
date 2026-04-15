@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - ReleaseDate
 
+- Switched Rust toolchain from a pinned version to `stable`.
+- Replaced unmaintained `backoff` crate with `backon` to resolve a `rand` vulnerability.
+- Upgraded all dependencies to their latest versions.
+
 ## [1.0.2] - 2025-08-06
 
 - `dfxvm` now has the aarch64-linux version and supports installing dfx with the aarch64-linux binaries.
