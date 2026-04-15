@@ -1,7 +1,7 @@
-use backoff::{retry, ExponentialBackoff};
 use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
 use std::process::Command;
+use std::time::Duration;
 
 pub fn create_executable(path: &Path, contents: &str) {
     std::fs::write(path, contents).unwrap();
@@ -10,21 +10,16 @@ pub fn create_executable(path: &Path, contents: &str) {
 }
 
 pub fn wait_until_file_is_not_busy(path: &Path) {
-    let backoff = ExponentialBackoff::default();
-    retry(backoff, || {
-        let mut command = Command::new(path);
-        let result = command.output();
-
-        const TEXT_FILE_BUSY: i32 = 26;
-        match result {
-            Ok(output) => Ok(output),
+    const TEXT_FILE_BUSY: i32 = 26;
+    loop {
+        match Command::new(path).output() {
+            Ok(_) => return,
             Err(err) if matches!(err.raw_os_error(), Some(TEXT_FILE_BUSY)) => {
-                Err(backoff::Error::transient(err))
+                std::thread::sleep(Duration::from_millis(100));
             }
-            Err(other) => Err(backoff::Error::permanent(other)),
+            Err(other) => panic!("unexpected error waiting for file to be ready: {other}"),
         }
-    })
-    .unwrap();
+    }
 }
 
 fn set_executable(bin_path: &Path) {

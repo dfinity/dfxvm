@@ -46,7 +46,7 @@ pub fn main(args: &[OsString], locations: &Locations) -> Result<ExitCode, dfx::E
     command.env("PATH", prepend_to_path(&locations.version_dir(&version)));
     let err = command.exec();
     Err(Exec {
-        command,
+        command: Box::new(command),
         source: err,
     })
 }

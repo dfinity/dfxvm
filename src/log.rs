@@ -25,7 +25,7 @@ pub fn info_fmt(args: fmt::Arguments<'_>) {
     let _ = writeln!(stderr);
 }
 
-pub fn log_error(e: &dyn Error) {
+pub fn log_error<E: Error + ?Sized>(e: &E) {
     err!("{:#}", e);
     let mut source = e.source();
     while let Some(cur) = source {

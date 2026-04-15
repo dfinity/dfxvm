@@ -15,7 +15,7 @@ pub enum Error {
 
     #[error("failed to execute {command:#?}")]
     Exec {
-        command: Command,
+        command: Box<Command>,
         source: std::io::Error,
     },
 }

@@ -11,8 +11,7 @@ use crate::error::{
 };
 use crate::fs::{create_file, read_to_string};
 use crate::log::log_error;
-use backoff::future::retry_notify;
-use backoff::ExponentialBackoff;
+use backon::{ExponentialBuilder, Retryable as _};
 use futures_util::StreamExt;
 use indicatif::{ProgressBar, ProgressStyle};
 use reqwest::Client;
@@ -46,21 +45,16 @@ pub async fn download_file(
     url: &Url,
     path: &Path,
 ) -> Result<FileHash, DownloadFileError> {
-    let notify = |err, dur| {
-        log_error(&err);
+    let notify = |err: &DownloadFileError, dur: std::time::Duration| {
+        log_error(err);
         err!("retry in {dur:?}");
     };
 
-    let operation = || async {
-        match attempt_download_file(client, url, path).await {
-            Ok(file_hash) => Ok(file_hash),
-            Err(e) if e.is_retryable() => Err(backoff::Error::transient(e)),
-            Err(e) => Err(backoff::Error::permanent(e)),
-        }
-    };
-
-    let backoff = ExponentialBackoff::default();
-    retry_notify(backoff, operation, notify).await
+    (|| async { attempt_download_file(client, url, path).await })
+        .retry(&ExponentialBuilder::default())
+        .when(|e| e.is_retryable())
+        .notify(notify)
+        .await
 }
 
 // h/t https://gist.github.com/giuliano-oliveira/4d11d6b3bb003dba3a1b53f43d81b30d
@@ -72,9 +66,12 @@ async fn attempt_download_file(
     info!("downloading {}", url);
 
     let pb = ProgressBar::new(0);
-    pb.set_style(ProgressStyle::default_bar()
-        .template("{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({bytes_per_sec}, {eta})")
-        .progress_chars("#>-"));
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template("{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({bytes_per_sec}, {eta})")
+            .expect("valid template")
+            .progress_chars("#>-"),
+    );
 
     let res = client
         .get(url.clone())

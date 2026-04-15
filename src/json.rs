@@ -9,7 +9,7 @@ use crate::error::{
 };
 use crate::fs::read;
 use crate::log::log_error;
-use backoff::{future::retry_notify, ExponentialBackoff};
+use backon::{ExponentialBuilder, Retryable as _};
 use reqwest::{Client, Url};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -38,21 +38,16 @@ pub fn save_json_file<T: Serialize>(path: &Path, value: &T) -> Result<(), SaveJs
 
 pub async fn fetch_json<T: DeserializeOwned>(url: &Url) -> Result<T, FetchJsonDocError> {
     let client = Client::new();
-    let notify = |err, dur| {
-        log_error(&err);
+    let notify = |err: &FetchJsonDocError, dur: std::time::Duration| {
+        log_error(err);
         err!("retry in {dur:?}");
     };
 
-    let operation = || async {
-        match attempt_fetch_json(&client, url.clone()).await {
-            Ok(doc) => Ok(doc),
-            Err(e) if e.is_retryable() => Err(backoff::Error::transient(e)),
-            Err(e) => Err(backoff::Error::permanent(e)),
-        }
-    };
-
-    let backoff = ExponentialBackoff::default();
-    retry_notify(backoff, operation, notify).await
+    (|| async { attempt_fetch_json(&client, url.clone()).await })
+        .retry(&ExponentialBuilder::default())
+        .when(|e| e.is_retryable())
+        .notify(notify)
+        .await
 }
 
 async fn attempt_fetch_json<T: DeserializeOwned>(
