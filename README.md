@@ -1,5 +1,14 @@
 # dfxvm: The dfx version manager
 
+> [!WARNING]
+> **dfxvm is deprecated and no longer maintained.** dfxvm and dfx have been
+> replaced by [icp-cli](https://github.com/dfinity/icp-cli). See the
+> [icp-cli documentation](https://cli.internetcomputer.org) to get started,
+> and the [migration guide](https://github.com/dfinity/icp-cli/blob/main/docs/migration/from-dfx.md)
+> if you are coming from dfx.
+>
+> The rest of this README is kept for historical reference.
+
 *dfxvm* installs the [Internet Computer SDK][sdk] (dfx), enabling you
 to easily switch between different versions.
 
