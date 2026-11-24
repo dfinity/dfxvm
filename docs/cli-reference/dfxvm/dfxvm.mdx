@@ -4,4 +4,44 @@ import { MarkdownChipRow } from "/src/components/Chip/MarkdownChipRow";
 
 <MarkdownChipRow labels={["Reference"]} />
 
-When invoked as `dfxvm`, manages dfx versions or itself.
+`dfxvm` is the version manager for the command-line tool `dfx`. 
+
+When invoked as `dfxvm`, manages `dfx` versions or itself.
+
+To set the default `dfx` version, use the `dfxvm default` command:
+
+```
+dfxvm default 0.25.1
+```
+
+Or, to set the `dfx` version for a single command:
+
+```
+dfx +0.25.1 --version
+```
+
+The `dfx` version can be set manually in a project's `dfx.json` file:
+
+```json
+{
+  "dfx": "0.25.0"
+}
+```
+
+## Subcommands
+
+Available subcommands are:
+
+- `dfxvm default`
+
+- `dfxvm install`
+
+- `dfxvm list`
+
+- `dfxvm self uninstall`
+
+- `dfxvm self update`
+
+- `dfxvm uninstall`
+
+- `dfxvm update`
